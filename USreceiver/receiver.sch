@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.05" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="1" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="no" active="no"/>
@@ -6503,8 +6503,8 @@ pastille octogonale = méplat</description>
 </class>
 </classes>
 <parts>
-<part name="R1" library="resistor" deviceset="R-EU_" device="R0603"/>
-<part name="R2" library="resistor" deviceset="R-EU_" device="R0603"/>
+<part name="R1" library="resistor" deviceset="R-EU_" device="R0603" value="1k"/>
+<part name="R2" library="resistor" deviceset="R-EU_" device="R0603" value="100k"/>
 <part name="R3" library="resistor" deviceset="R-EU_" device="R0603" value="4,7k"/>
 <part name="R6" library="resistor" deviceset="R-EU_" device="R0603" value="1k"/>
 <part name="R7" library="resistor" deviceset="R-EU_" device="R0603" value="1k"/>
@@ -6518,16 +6518,16 @@ pastille octogonale = méplat</description>
 <part name="GND3" library="libSheldonDrone" deviceset="GND" device=""/>
 <part name="+3V2" library="libSheldonDrone" deviceset="+3V3" device=""/>
 <part name="P+3" library="libSheldonDrone" deviceset="VCC/2" device=""/>
-<part name="R4" library="resistor" deviceset="R-EU_" device="R0603"/>
+<part name="R4" library="resistor" deviceset="R-EU_" device="R0603" value="1k"/>
 <part name="R5" library="resistor" deviceset="R-EU_" device="R0603" value="4,7k"/>
 <part name="C5" library="resistor" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="GND4" library="libSheldonDrone" deviceset="GND" device=""/>
 <part name="+3V3" library="libSheldonDrone" deviceset="+3V3" device=""/>
-<part name="R8" library="resistor" deviceset="R-EU_" device="R0603"/>
+<part name="R8" library="resistor" deviceset="R-EU_" device="R0603" value="100k"/>
 <part name="US1_U1" library="libSheldonDrone" deviceset="US-R-10MM" device=""/>
 <part name="US2_U1" library="libSheldonDrone" deviceset="US-R-10MM" device=""/>
-<part name="R9" library="resistor" deviceset="R-EU_" device="R0603"/>
-<part name="R10" library="resistor" deviceset="R-EU_" device="R0603"/>
+<part name="R9" library="resistor" deviceset="R-EU_" device="R0603" value="1k"/>
+<part name="R10" library="resistor" deviceset="R-EU_" device="R0603" value="100k"/>
 <part name="R11" library="resistor" deviceset="R-EU_" device="R0603" value="4,7k"/>
 <part name="C1" library="resistor" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="U2" library="libSheldonDrone" deviceset="LMP7712MM" device=""/>
@@ -6535,51 +6535,51 @@ pastille octogonale = méplat</description>
 <part name="GND6" library="libSheldonDrone" deviceset="GND" device=""/>
 <part name="+3V4" library="libSheldonDrone" deviceset="+3V3" device=""/>
 <part name="P+5" library="libSheldonDrone" deviceset="VCC/2" device=""/>
-<part name="R12" library="resistor" deviceset="R-EU_" device="R0603"/>
+<part name="R12" library="resistor" deviceset="R-EU_" device="R0603" value="1k"/>
 <part name="R13" library="resistor" deviceset="R-EU_" device="R0603" value="4,7k"/>
 <part name="C3" library="resistor" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="GND7" library="libSheldonDrone" deviceset="GND" device=""/>
 <part name="+3V5" library="libSheldonDrone" deviceset="+3V3" device=""/>
-<part name="R14" library="resistor" deviceset="R-EU_" device="R0603"/>
+<part name="R14" library="resistor" deviceset="R-EU_" device="R0603" value="100k"/>
 <part name="US1_U2" library="libSheldonDrone" deviceset="US-R-10MM" device=""/>
 <part name="US2_U2" library="libSheldonDrone" deviceset="US-R-10MM" device=""/>
-<part name="R15" library="resistor" deviceset="R-EU_" device="R0603"/>
+<part name="R15" library="resistor" deviceset="R-EU_" device="R0603" value="1k"/>
 <part name="R16" library="resistor" deviceset="R-EU_" device="R0603" value="4,7k"/>
 <part name="C6" library="resistor" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="GND8" library="libSheldonDrone" deviceset="GND" device=""/>
 <part name="+3V6" library="libSheldonDrone" deviceset="+3V3" device=""/>
-<part name="R17" library="resistor" deviceset="R-EU_" device="R0603"/>
+<part name="R17" library="resistor" deviceset="R-EU_" device="R0603" value="1k"/>
 <part name="R18" library="resistor" deviceset="R-EU_" device="R0603" value="4,7k"/>
 <part name="C7" library="resistor" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="GND9" library="libSheldonDrone" deviceset="GND" device=""/>
 <part name="+3V7" library="libSheldonDrone" deviceset="+3V3" device=""/>
 <part name="US1_U3" library="libSheldonDrone" deviceset="US-R-10MM" device=""/>
 <part name="US2_U3" library="libSheldonDrone" deviceset="US-R-10MM" device=""/>
-<part name="R19" library="resistor" deviceset="R-EU_" device="R0603"/>
+<part name="R19" library="resistor" deviceset="R-EU_" device="R0603" value="1k"/>
 <part name="R20" library="resistor" deviceset="R-EU_" device="R0603" value="4,7k"/>
 <part name="C8" library="resistor" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="GND10" library="libSheldonDrone" deviceset="GND" device=""/>
 <part name="+3V8" library="libSheldonDrone" deviceset="+3V3" device=""/>
-<part name="R21" library="resistor" deviceset="R-EU_" device="R0603"/>
+<part name="R21" library="resistor" deviceset="R-EU_" device="R0603" value="1k"/>
 <part name="R22" library="resistor" deviceset="R-EU_" device="R0603" value="4,7k"/>
 <part name="C9" library="resistor" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="GND11" library="libSheldonDrone" deviceset="GND" device=""/>
 <part name="+3V9" library="libSheldonDrone" deviceset="+3V3" device=""/>
 <part name="US1_U4" library="libSheldonDrone" deviceset="US-R-10MM" device=""/>
 <part name="US2_U4" library="libSheldonDrone" deviceset="US-R-10MM" device=""/>
-<part name="R23" library="resistor" deviceset="R-EU_" device="R0603"/>
+<part name="R23" library="resistor" deviceset="R-EU_" device="R0603" value="100k"/>
 <part name="U3" library="libSheldonDrone" deviceset="LMP7712MM" device=""/>
 <part name="GND12" library="libSheldonDrone" deviceset="GND" device=""/>
 <part name="P+7" library="libSheldonDrone" deviceset="VCC/2" device=""/>
-<part name="R24" library="resistor" deviceset="R-EU_" device="R0603"/>
-<part name="R25" library="resistor" deviceset="R-EU_" device="R0603"/>
+<part name="R24" library="resistor" deviceset="R-EU_" device="R0603" value="100k"/>
+<part name="R25" library="resistor" deviceset="R-EU_" device="R0603" value="100k"/>
 <part name="U4" library="libSheldonDrone" deviceset="LMP7712MM" device=""/>
 <part name="GND13" library="libSheldonDrone" deviceset="GND" device=""/>
 <part name="P+9" library="libSheldonDrone" deviceset="VCC/2" device=""/>
-<part name="R26" library="resistor" deviceset="R-EU_" device="R0603"/>
+<part name="R26" library="resistor" deviceset="R-EU_" device="R0603" value="100k"/>
 <part name="U5" library="libSheldonDrone" deviceset="LM1117MP-3.3" device=""/>
 <part name="P+10" library="libSheldonDrone" deviceset="+5V" device=""/>
-<part name="100µ1" library="@Club_passif" deviceset="CPOL_" device="DIAM5MM"/>
+<part name="C11" library="@Club_passif" deviceset="CPOL_" device="DIAM5MM" value="100µ"/>
 <part name="C10" library="resistor" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="U$9" library="libSheldonDrone" deviceset="STM32-H103" device=""/>
 <part name="P+11" library="libSheldonDrone" deviceset="+5V" device=""/>
@@ -6593,6 +6593,8 @@ pastille octogonale = méplat</description>
 <part name="+3V11" library="libSheldonDrone" deviceset="+3V3" device=""/>
 <part name="+3V12" library="libSheldonDrone" deviceset="+3V3" device=""/>
 <part name="+3V13" library="libSheldonDrone" deviceset="+3V3" device=""/>
+<part name="C12" library="@Club_passif" deviceset="CPOL_" device="DIAM5MM" value="2.2µ"/>
+<part name="C13" library="@Club_passif" deviceset="CPOL_" device="DIAM5MM" value="2.2µ"/>
 </parts>
 <sheets>
 <sheet>
@@ -6619,14 +6621,14 @@ pastille octogonale = méplat</description>
 <instance part="R1" gate="G$1" x="58.42" y="109.22"/>
 <instance part="R2" gate="G$1" x="219.71" y="97.79" rot="R180"/>
 <instance part="R3" gate="G$1" x="36.83" y="114.3" rot="R90"/>
-<instance part="R6" gate="G$1" x="91.44" y="162.56" rot="R270"/>
-<instance part="R7" gate="G$1" x="91.44" y="148.59" rot="R270"/>
-<instance part="C2" gate="G$1" x="76.2" y="151.13"/>
+<instance part="R6" gate="G$1" x="97.44" y="162.56" rot="R270"/>
+<instance part="R7" gate="G$1" x="97.44" y="148.59" rot="R270"/>
+<instance part="C2" gate="G$1" x="74.93" y="151.13"/>
 <instance part="C4" gate="G$1" x="44.45" y="109.22" rot="R90"/>
 <instance part="U1" gate="A" x="193.04" y="93.98"/>
 <instance part="GND1" gate="1" x="16.51" y="140.97"/>
-<instance part="+3V1" gate="G$1" x="76.2" y="168.91"/>
-<instance part="P+1" gate="G$1" x="100.33" y="154.94" rot="R270"/>
+<instance part="+3V1" gate="G$1" x="74.93" y="168.91"/>
+<instance part="P+1" gate="G$1" x="106.33" y="154.94" rot="R270"/>
 <instance part="GND2" gate="1" x="172.72" y="72.39"/>
 <instance part="GND3" gate="1" x="27.94" y="99.06"/>
 <instance part="+3V2" gate="G$1" x="36.83" y="123.19"/>
@@ -6692,7 +6694,7 @@ pastille octogonale = méplat</description>
 <instance part="R26" gate="G$1" x="304.8" y="52.07"/>
 <instance part="U5" gate="A" x="53.34" y="158.75"/>
 <instance part="P+10" gate="1" x="16.51" y="170.18"/>
-<instance part="100µ1" gate="G$1" x="16.51" y="158.75"/>
+<instance part="C11" gate="G$1" x="16.51" y="158.75"/>
 <instance part="C10" gate="G$1" x="26.67" y="158.75"/>
 <instance part="U$9" gate="G$1" x="134.62" y="241.3"/>
 <instance part="P+11" gate="1" x="196.85" y="157.48" rot="R270"/>
@@ -6706,6 +6708,8 @@ pastille octogonale = méplat</description>
 <instance part="+3V11" gate="G$1" x="255.27" y="111.76"/>
 <instance part="+3V12" gate="G$1" x="171.45" y="59.69"/>
 <instance part="+3V13" gate="G$1" x="256.54" y="55.88"/>
+<instance part="C12" gate="G$1" x="82.55" y="151.13"/>
+<instance part="C13" gate="G$1" x="88.9" y="151.13"/>
 </instances>
 <busses>
 </busses>
@@ -6721,12 +6725,14 @@ pastille octogonale = méplat</description>
 <pinref part="GND1" gate="1" pin="GND"/>
 <pinref part="R7" gate="G$1" pin="2"/>
 <wire x1="16.51" y1="143.51" x2="72.39" y2="143.51" width="0.1524" layer="91"/>
-<wire x1="72.39" y1="143.51" x2="76.2" y2="143.51" width="0.1524" layer="91"/>
-<wire x1="76.2" y1="143.51" x2="91.44" y2="143.51" width="0.1524" layer="91"/>
+<wire x1="72.39" y1="143.51" x2="74.93" y2="143.51" width="0.1524" layer="91"/>
+<wire x1="74.93" y1="143.51" x2="82.55" y2="143.51" width="0.1524" layer="91"/>
 <pinref part="C2" gate="G$1" pin="2"/>
-<wire x1="76.2" y1="146.05" x2="76.2" y2="143.51" width="0.1524" layer="91"/>
-<junction x="76.2" y="143.51"/>
-<pinref part="100µ1" gate="G$1" pin="P$2"/>
+<wire x1="82.55" y1="143.51" x2="88.9" y2="143.51" width="0.1524" layer="91"/>
+<wire x1="88.9" y1="143.51" x2="97.44" y2="143.51" width="0.1524" layer="91"/>
+<wire x1="74.93" y1="146.05" x2="74.93" y2="143.51" width="0.1524" layer="91"/>
+<junction x="74.93" y="143.51"/>
+<pinref part="C11" gate="G$1" pin="P$2"/>
 <pinref part="U5" gate="A" pin="ADJ/GND"/>
 <wire x1="16.51" y1="153.67" x2="26.67" y2="153.67" width="0.1524" layer="91"/>
 <wire x1="26.67" y1="153.67" x2="35.56" y2="153.67" width="0.1524" layer="91"/>
@@ -6739,6 +6745,12 @@ pastille octogonale = méplat</description>
 <wire x1="71.12" y1="158.75" x2="72.39" y2="158.75" width="0.1524" layer="91"/>
 <wire x1="72.39" y1="158.75" x2="72.39" y2="143.51" width="0.1524" layer="91"/>
 <junction x="72.39" y="143.51"/>
+<pinref part="C13" gate="G$1" pin="P$2"/>
+<wire x1="88.9" y1="146.05" x2="88.9" y2="143.51" width="0.1524" layer="91"/>
+<junction x="88.9" y="143.51"/>
+<pinref part="C12" gate="G$1" pin="P$2"/>
+<wire x1="82.55" y1="146.05" x2="82.55" y2="143.51" width="0.1524" layer="91"/>
+<junction x="82.55" y="143.51"/>
 </segment>
 <segment>
 <pinref part="GND3" gate="1" pin="GND"/>
@@ -6822,16 +6834,19 @@ pastille octogonale = méplat</description>
 <net name="+3V3" class="0">
 <segment>
 <pinref part="+3V1" gate="G$1" pin="+3V3"/>
-<wire x1="76.2" y1="166.37" x2="76.2" y2="156.21" width="0.1524" layer="91"/>
+<wire x1="74.93" y1="166.37" x2="74.93" y2="156.21" width="0.1524" layer="91"/>
 <pinref part="C2" gate="G$1" pin="1"/>
-<wire x1="76.2" y1="153.67" x2="76.2" y2="156.21" width="0.1524" layer="91"/>
-<junction x="76.2" y="156.21"/>
+<wire x1="74.93" y1="153.67" x2="74.93" y2="156.21" width="0.1524" layer="91"/>
+<junction x="74.93" y="156.21"/>
 <pinref part="U5" gate="A" pin="OUT"/>
-<wire x1="71.12" y1="156.21" x2="76.2" y2="156.21" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="156.21" x2="74.93" y2="156.21" width="0.1524" layer="91"/>
 <pinref part="R6" gate="G$1" pin="1"/>
-<wire x1="91.44" y1="167.64" x2="81.28" y2="167.64" width="0.1524" layer="91"/>
-<wire x1="81.28" y1="167.64" x2="81.28" y2="156.21" width="0.1524" layer="91"/>
-<wire x1="81.28" y1="156.21" x2="76.2" y2="156.21" width="0.1524" layer="91"/>
+<wire x1="97.44" y1="167.64" x2="82.55" y2="167.64" width="0.1524" layer="91"/>
+<wire x1="82.55" y1="167.64" x2="82.55" y2="156.21" width="0.1524" layer="91"/>
+<wire x1="82.55" y1="156.21" x2="74.93" y2="156.21" width="0.1524" layer="91"/>
+<pinref part="C12" gate="G$1" pin="P$1"/>
+<wire x1="82.55" y1="153.67" x2="82.55" y2="156.21" width="0.1524" layer="91"/>
+<junction x="82.55" y="156.21"/>
 </segment>
 <segment>
 <pinref part="R3" gate="G$1" pin="2"/>
@@ -6902,11 +6917,15 @@ pastille octogonale = méplat</description>
 <segment>
 <pinref part="R6" gate="G$1" pin="2"/>
 <pinref part="R7" gate="G$1" pin="1"/>
-<wire x1="91.44" y1="157.48" x2="91.44" y2="154.94" width="0.1524" layer="91"/>
-<wire x1="91.44" y1="154.94" x2="91.44" y2="153.67" width="0.1524" layer="91"/>
-<wire x1="91.44" y1="154.94" x2="97.79" y2="154.94" width="0.1524" layer="91"/>
-<junction x="91.44" y="154.94"/>
+<wire x1="97.44" y1="157.48" x2="97.44" y2="154.94" width="0.1524" layer="91"/>
+<wire x1="97.44" y1="154.94" x2="97.44" y2="153.67" width="0.1524" layer="91"/>
+<wire x1="97.44" y1="154.94" x2="97.79" y2="154.94" width="0.1524" layer="91"/>
+<junction x="97.44" y="154.94"/>
 <pinref part="P+1" gate="G$1" pin="VCC/2"/>
+<pinref part="C13" gate="G$1" pin="P$1"/>
+<wire x1="97.79" y1="154.94" x2="103.79" y2="154.94" width="0.1524" layer="91"/>
+<wire x1="88.9" y1="153.67" x2="88.9" y2="154.94" width="0.1524" layer="91"/>
+<wire x1="88.9" y1="154.94" x2="97.44" y2="154.94" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="U1" gate="A" pin="+INA"/>
@@ -7352,7 +7371,7 @@ pastille octogonale = méplat</description>
 <net name="+5V" class="0">
 <segment>
 <pinref part="P+10" gate="1" pin="+5V"/>
-<pinref part="100µ1" gate="G$1" pin="P$1"/>
+<pinref part="C11" gate="G$1" pin="P$1"/>
 <wire x1="16.51" y1="167.64" x2="16.51" y2="161.29" width="0.1524" layer="91"/>
 <pinref part="U5" gate="A" pin="IN"/>
 <wire x1="35.56" y1="158.75" x2="34.29" y2="158.75" width="0.1524" layer="91"/>
