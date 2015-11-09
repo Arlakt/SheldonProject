@@ -34,3 +34,9 @@ sheldrone_us_receiver configuration/\main.o: ../Inc/usbd_conf.h
 sheldrone_us_receiver configuration/\main.o: F:\Programmes\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 sheldrone_us_receiver configuration/\main.o: F:\Programmes\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 sheldrone_us_receiver configuration/\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h
+sheldrone_us_receiver configuration/\main.o: ../Inc/usbd_cdc_if.h
+sheldrone_us_receiver configuration/\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h
+sheldrone_us_receiver configuration/\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h
+sheldrone_us_receiver configuration/\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h
+sheldrone_us_receiver configuration/\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h
+sheldrone_us_receiver configuration/\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h

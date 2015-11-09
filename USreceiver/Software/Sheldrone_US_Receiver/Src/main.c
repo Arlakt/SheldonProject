@@ -33,6 +33,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f1xx_hal.h"
 #include "usb_device.h"
+#include "usbd_cdc_if.h"
 
 /* USER CODE BEGIN Includes */
 
@@ -100,12 +101,19 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	
+	uint32_t i;
+	uint8_t dataToSend[10] = {1,2,3,4,5,6,7,8,9,10};
+	
   while (1)
   {
+		for (i = 0x000FFFFF; i--; );
+		CDC_Transmit_FS(dataToSend, 10);
+		
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-
+	
   }
   /* USER CODE END 3 */
 
