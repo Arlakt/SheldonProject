@@ -107,7 +107,7 @@ int main(void)
 	
   while (1)
   {
-		for (i = 0x000FFFFF; i--; );
+		//for (i = 0x000FFFFF; i--; );
 		CDC_Transmit_FS(dataToSend, 10);
 		
   /* USER CODE END WHILE */
