@@ -1,0 +1,44 @@
+@startuml
+
+title Communication between receiver board and embedded PC
+
+"Drone PC" -> "Receiver Board" : Start - 'S'
+"Receiver Board" --> "Drone PC" : Answer - 'S'
+
+hnote over "Receiver Board" : Measures
+
+"Receiver Board" -> "Drone PC" : Data[0] - 1st byte
+"Receiver Board" -> "Drone PC" : Data[0] - 2nd byte
+note left
+Data[0]
+end note
+
+"Receiver Board" -> "Drone PC" : Data[1] - 1st byte
+"Receiver Board" -> "Drone PC" : Data[1] - 2nd byte
+note left
+Data[1]
+end note
+
+... ...
+
+hnote over "Receiver Board" : Measures
+
+"Receiver Board" -> "Drone PC" : Data[0] - 1st byte
+"Receiver Board" -> "Drone PC" : Data[0] - 2nd byte
+note left
+Data[0]
+end note
+
+"Drone PC" -> "Receiver Board" : Start - 'S'
+"Receiver Board" --> "Drone PC" : Answer - 'S'
+
+hnote over "Receiver Board" : Measures
+
+"Receiver Board" -> "Drone PC" : Data[0] - 1st byte
+"Receiver Board" -> "Drone PC" : Data[0] - 2nd byte
+note left
+Data[0]
+end note
+
+
+@enduml
