@@ -32,4 +32,6 @@
 *.dSYM/
 
 # Eagle temp files
-*.#*
+*.l#*
+*.s#*
+*.b#*
