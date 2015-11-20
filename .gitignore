@@ -36,8 +36,5 @@
 *.s#*
 *.b#*
 
-# Hidden files
-.*
-
 # Backup files
 *~
