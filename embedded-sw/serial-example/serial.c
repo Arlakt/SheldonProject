@@ -21,7 +21,11 @@ int main(int argc, char * argv[])
 
 	fcntl(fd, F_SETFL, 0);
 
-	write(fd, "S", 1);
+	int n = write(fd, "S", 1);
+	if (n < 0) {
+		perror("Write failed");
+		return 1;
+	}
 
 	for (;;) {
 		char buffer[32];
