@@ -102,23 +102,24 @@ ARM Macro Assembler    Page 2
    58 00000400         ;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
    59 00000400         ; </h>
    60 00000400         
-   61 00000400 00000200 
+   61 00000400 00000600 
                        Heap_Size
-                               EQU              0x00000200
+                               EQU              0x00000600  ; from 200 to 600 b
+                                                            y Romain
    62 00000400         
    63 00000400                 AREA             HEAP, NOINIT, READWRITE, ALIGN=
 3
    64 00000000         __heap_base
    65 00000000         Heap_Mem
                                SPACE            Heap_Size
-   66 00000200         __heap_limit
-   67 00000200         
-   68 00000200                 PRESERVE8
-   69 00000200                 THUMB
-   70 00000200         
-   71 00000200         
-   72 00000200         ; Vector Table Mapped to Address 0 at Reset
-   73 00000200                 AREA             RESET, DATA, READONLY
+   66 00000600         __heap_limit
+   67 00000600         
+   68 00000600                 PRESERVE8
+   69 00000600                 THUMB
+   70 00000600         
+   71 00000600         
+   72 00000600         ; Vector Table Mapped to Address 0 at Reset
+   73 00000600                 AREA             RESET, DATA, READONLY
    74 00000000                 EXPORT           __Vectors
    75 00000000                 EXPORT           __Vectors_End
    76 00000000                 EXPORT           __Vectors_Size
@@ -127,13 +128,13 @@ ARM Macro Assembler    Page 2
                        __Vectors
                                DCD              __initial_sp ; Top of Stack
    79 00000004 00000000        DCD              Reset_Handler ; Reset Handler
-   80 00000008 00000000        DCD              NMI_Handler ; NMI Handler
 
 
 
 ARM Macro Assembler    Page 3 
 
 
+   80 00000008 00000000        DCD              NMI_Handler ; NMI Handler
    81 0000000C 00000000        DCD              HardFault_Handler ; Hard Fault 
                                                             Handler
    82 00000010 00000000        DCD              MemManage_Handler 
@@ -192,13 +193,13 @@ ARM Macro Assembler    Page 3
   116 00000090 00000000        DCD              USB_LP_CAN1_RX0_IRQHandler ; US
                                                             B Low  Priority or 
                                                             CAN1 RX0
-  117 00000094 00000000        DCD              CAN1_RX1_IRQHandler ; CAN1 RX1
 
 
 
 ARM Macro Assembler    Page 4 
 
 
+  117 00000094 00000000        DCD              CAN1_RX1_IRQHandler ; CAN1 RX1
   118 00000098 00000000        DCD              CAN1_SCE_IRQHandler ; CAN1 SCE
   119 0000009C 00000000        DCD              EXTI9_5_IRQHandler 
                                                             ; EXTI Line 9..5
@@ -257,13 +258,13 @@ ARM Macro Assembler    Page 4
   155 00000008         
   156 00000008         ; Dummy Exception Handlers (infinite loops which can be 
                        modified)
-  157 00000008         
 
 
 
 ARM Macro Assembler    Page 5 
 
 
+  157 00000008         
   158 00000008         NMI_Handler
                                PROC
   159 00000008                 EXPORT           NMI_Handler                [WEA
@@ -322,13 +323,13 @@ K]
   200 0000001A         Default_Handler
                                PROC
   201 0000001A         
-  202 0000001A                 EXPORT           WWDG_IRQHandler            [WEA
 
 
 
 ARM Macro Assembler    Page 6 
 
 
+  202 0000001A                 EXPORT           WWDG_IRQHandler            [WEA
 K]
   203 0000001A                 EXPORT           PVD_IRQHandler             [WEA
 K]
@@ -387,13 +388,13 @@ K]
   230 0000001A                 EXPORT           TIM2_IRQHandler            [WEA
 K]
   231 0000001A                 EXPORT           TIM3_IRQHandler            [WEA
-K]
 
 
 
 ARM Macro Assembler    Page 7 
 
 
+K]
   232 0000001A                 EXPORT           TIM4_IRQHandler            [WEA
 K]
   233 0000001A                 EXPORT           I2C1_EV_IRQHandler         [WEA
@@ -452,13 +453,13 @@ K]
   274 0000001A         TIM2_IRQHandler
   275 0000001A         TIM3_IRQHandler
   276 0000001A         TIM4_IRQHandler
-  277 0000001A         I2C1_EV_IRQHandler
 
 
 
 ARM Macro Assembler    Page 8 
 
 
+  277 0000001A         I2C1_EV_IRQHandler
   278 0000001A         I2C1_ER_IRQHandler
   279 0000001A         I2C2_EV_IRQHandler
   280 0000001A         I2C2_ER_IRQHandler
@@ -575,7 +576,7 @@ arm/startup_stm32f103xb.s
       At line 302 in file ../Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates
 /arm/startup_stm32f103xb.s
 Comment: __heap_base used once
-__heap_limit 00000200
+__heap_limit 00000600
 
 Symbol: __heap_limit
    Definitions
@@ -1359,7 +1360,7 @@ arm/startup_stm32f103xb.s
 ARM Macro Assembler    Page 1 Alphabetic symbol ordering
 Absolute symbols
 
-Heap_Size 00000200
+Heap_Size 00000600
 
 Symbol: Heap_Size
    Definitions

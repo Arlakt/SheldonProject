@@ -32,7 +32,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_cdc_if.h"
+
 /* USER CODE BEGIN INCLUDE */
+#include "customUtils.h"
 /* USER CODE END INCLUDE */
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
@@ -90,11 +92,12 @@ uint8_t UserTxBufferFS[APP_TX_DATA_SIZE];
 /* USB handler declaration */
 /* Handle for USB Full Speed IP */
   USBD_HandleTypeDef  *hUsbDevice_0;
+	bool CDC_Is_Ready = false;
 /* USER CODE BEGIN PRIVATE_VARIABLES  */
 
 // The CDC line coding parameters
 USBD_CDC_LineCodingTypeDef LineCoding = {
-		115200, // baud rate
+		9600, // baud rate
 		0x00,   // stop bits: 1
 		0x00,   // parity: none
 		0x08    // number of bits: 8
@@ -154,6 +157,7 @@ static int8_t CDC_Init_FS(void)
   /* Set Application Buffers */
   USBD_CDC_SetTxBuffer(hUsbDevice_0, UserTxBufferFS, 0);
   USBD_CDC_SetRxBuffer(hUsbDevice_0, UserRxBufferFS);
+	CDC_Is_Ready = true;
   return (USBD_OK);
   /* USER CODE END 3 */ 
 }
@@ -303,14 +307,19 @@ static int8_t CDC_Receive_FS (uint8_t* Buf, uint32_t *Len)
 uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
 {
   uint8_t result = USBD_OK;
+	memcpy(UserTxBufferFS, Buf, Len);
   /* USER CODE BEGIN 7 */ 
-  USBD_CDC_SetTxBuffer(hUsbDevice_0, Buf, Len);   
+  USBD_CDC_SetTxBuffer(hUsbDevice_0, UserTxBufferFS, Len);   
   result = USBD_CDC_TransmitPacket(hUsbDevice_0);
   /* USER CODE END 7 */ 
   return result;
 }
 
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_IMPLEMENTATION */
+bool Is_CDC_Ready(void)
+{
+	return CDC_Is_Ready;
+}
 /* USER CODE END  PRIVATE_FUNCTIONS_IMPLEMENTATION */
 
 /**

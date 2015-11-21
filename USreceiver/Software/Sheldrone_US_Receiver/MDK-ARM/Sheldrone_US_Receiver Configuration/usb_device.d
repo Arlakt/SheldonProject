@@ -41,3 +41,4 @@ sheldrone_us_receiver configuration/\usb_device.o: ../Middlewares/ST/STM32_USB_D
 sheldrone_us_receiver configuration/\usb_device.o: ../Inc/usbd_desc.h
 sheldrone_us_receiver configuration/\usb_device.o: ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h
 sheldrone_us_receiver configuration/\usb_device.o: ../Inc/usbd_cdc_if.h
+sheldrone_us_receiver configuration/\usb_device.o: ../Inc/customUtils.h

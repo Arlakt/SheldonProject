@@ -40,3 +40,5 @@ sheldrone_us_receiver configuration/\main.o: ../Middlewares/ST/STM32_USB_Device_
 sheldrone_us_receiver configuration/\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h
 sheldrone_us_receiver configuration/\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h
 sheldrone_us_receiver configuration/\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h
+sheldrone_us_receiver configuration/\main.o: ../Inc/customUtils.h
+sheldrone_us_receiver configuration/\main.o: ../Inc/customUtils.h

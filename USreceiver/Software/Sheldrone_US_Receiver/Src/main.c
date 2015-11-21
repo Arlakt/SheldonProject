@@ -36,7 +36,7 @@
 #include "usbd_cdc_if.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "customUtils.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -102,13 +102,16 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	
-	uint32_t i;
-	uint8_t dataToSend[10] = {1,2,3,4,5,6,7,8,9,10};
+	uint8_t dataToSend[11] = "Hello World";
+	
+	// Wait for USB to be ready
+	//while(!Is_CDC_Ready());
+	//HAL_Delay(1000);
 	
   while (1)
   {
-		//for (i = 0x000FFFFF; i--; );
-		CDC_Transmit_FS(dataToSend, 10);
+		//CDC_Transmit_FS(dataToSend, 11); // Length < APP_TX_DATA_SIZE
+		//HAL_Delay(1000);
 		
   /* USER CODE END WHILE */
 
