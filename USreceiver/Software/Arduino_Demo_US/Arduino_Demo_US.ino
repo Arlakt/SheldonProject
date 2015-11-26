@@ -1,38 +1,27 @@
-#define NBECHANTILLON 512
-#define NBCAPTEURS  8
-#define OFFSET  337
+//defines the pin connections
+int sensePin= 5;
+int LEDPin= 8;
 
-long valeurs[NBCAPTEURS];
-long moyennes[NBCAPTEURS]={0,0,0,0,0,0,0,0};
-int moyenneSurUnOctet[NBCAPTEURS];
-int i=0;
-int compteur=0;
+//defines normal and threshold voltage levels
+int threshold= 500;
 
-bool start = false;
+//sets GroundPin and LEDPin as output pins, with GroundPin being set to LOW
+void setup()
+{
+Serial.begin(9600);
 
-
-void setup() {
-  Serial.begin(9600);
-  delay(5000);
+pinMode(LEDPin, OUTPUT);
 }
 
-void loop() {
-  for (compteur=0;compteur<NBECHANTILLON;compteur++){
-    for (i=0;i<NBCAPTEURS;i++){
-      valeurs[i]=analogRead(i) - OFFSET;
-      valeurs[i] *= valeurs[i];
-      moyennes[i]=(moyennes[i]*compteur+valeurs[i])/(compteur+1);
-    }
-  }
-  for(i=0;i<NBCAPTEURS;i++){
-    
-    moyenneSurUnOctet[i] = moyennes[i]*255/60000;
-    Serial.write(moyenneSurUnOctet[i]);
-    // For debug only
-    //Serial.print(moyenneSurUnOctet[i]);
-    //Serial.print("\n");
-    moyennes[i]=0;
-  }
-  //Serial.print("\n");
+//if the reading is higher than the threshold value, then the LED is turned on
+void loop()
+{
+int reading= analogRead(sensePin);
+Serial.println(reading);
+if (reading > threshold)
+{
+digitalWrite(LEDPin, HIGH);
+delay(1000);
+digitalWrite(LEDPin, LOW);
 }
-
+}
