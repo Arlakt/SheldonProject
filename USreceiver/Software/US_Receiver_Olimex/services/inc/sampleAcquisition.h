@@ -36,7 +36,8 @@
 #define ADC1_DR_Address    	((uint32_t)0x4001244C)
 #define TIM1_CCR1_Address  	((uint32_t)0x40012C34)
 
-#define SIGNAL_BUFFER_SIZE	128
+
+#define SIGNAL_BUFFER_SIZE	2048
 #define SIGNAL_HALF_BUFFER_SIZE 		(SIGNAL_BUFFER_SIZE/2)
 
 extern uint16_t adcBuffer[SIGNAL_BUFFER_SIZE];		// Static buffer to save a signal
@@ -47,17 +48,6 @@ extern uint16_t idDataToProcess;
 	*   PRIVATE FUNCTIONS
 	*
 	*****************************************************************************/
-	
-
-/*******************************************************************************
-	* setLEDAcquisition
-	*
-	*			Set the acquisition LED (3rd pin)
-	* 			
-	* @param Void  
-	* @return Void
-	******************************************************************************/
-void setLEDAcquisition( uint8_t status );
 
 
 /******************************************************************************
@@ -67,15 +57,10 @@ void setLEDAcquisition( uint8_t status );
 	*****************************************************************************/
 
 
-/********************************************************************************
-	* sampleAcquisitionInit
-	*
-	*      Init the sampling routine.
-	*				Blocking function.
-	* 			
-	* @param Void
-	* @return 0 if working
-	*******************************************************************************/
+/**
+	* @brief	Init the sampling routine.
+	*					Blocking function.
+	*/
 void sampleAcquisitionInit( void );
 
 

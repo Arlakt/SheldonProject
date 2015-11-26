@@ -19,8 +19,12 @@
 
 #include "usbComm.h"
 #include "stm32f10x.h"
+#include "stm32f10x_tim.h"
+#include "stm32f10x_rcc.h"
+#include "misc.h"
 #include "usb_cdc.h"
 #include "serialFrame.h"
+
 
 	
 /******************************************************************************
@@ -53,7 +57,53 @@ void usbCommInit( void )
   USB_Init();
 	while (USB_GetState() != CONFIGURED) {} // Wait USB is ready
 	
+	usbCommInitPeriodicSending();
 }
+
+
+/**
+	* @brief	Initializes a periodic data sending thanks to a Timer interruption
+	*
+	*/
+void usbCommInitPeriodicSending(void)
+{
+	TIM_TimeBaseInitTypeDef   TIM_TimeBaseStructure; // Timer base configuration
+	NVIC_InitTypeDef NVIC_InitStructure; // IT
+	
+	// Timer 2 config
+	RCC_APB1PeriphClockCmd( RCC_APB1Periph_TIM2 , ENABLE );
+  TIM_TimeBaseStructInit( &TIM_TimeBaseStructure ); 
+  TIM_TimeBaseStructure.TIM_Period = 				36000;  // 36MHz / 36000 = 1kHz  
+  TIM_TimeBaseStructure.TIM_Prescaler = 		0x0;       
+  TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;    
+  TIM_TimeBaseStructure.TIM_CounterMode = 	TIM_CounterMode_Down;  
+  TIM_TimeBaseInit( TIM2, &TIM_TimeBaseStructure );
+	
+	TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+	
+	// Configure NVIC for Timer 2 interrupt
+	NVIC_InitStructure.NVIC_IRQChannel = 										TIM2_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 	5;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 				2;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = 								ENABLE;
+  NVIC_Init( &NVIC_InitStructure );
+	
+	TIM_Cmd( TIM2, ENABLE );
+}
+
+/**
+	* @brief		This callback is periodicly called to send data over USB
+	* @details	Period is set in @ref usbCommInitPeriodicSending
+	*						This callback resets signal processing parameters
+	*/
+void TIM2_IRQHandler (void)
+{
+	
+	
+	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+}
+
 
 /**
 	* @brief Send back data received over USB

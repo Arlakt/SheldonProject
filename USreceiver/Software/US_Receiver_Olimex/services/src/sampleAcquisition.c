@@ -11,6 +11,18 @@
 	*/
 
 
+/** \page Clocks configuration
+	* \section ADC sampling frequency
+	* 
+	* \li APB2 Clock = 72MHz
+	* \li ADC prescaler = 6
+	* \li ==> ADC clock = 12MHz
+	* \li 1.5 cycles + 12.5 = 14 cycles per conversion ( \sea Reference Manual p224)
+	* \li Max Sampling frequency = 12MHz/15 = 857 kHz
+	* \li 8 channels ==> Max Sampling frequency for each channel = 107 kHz
+	* \li Current config : sampling frequency = 100 kHz on Timer trigger
+	*/
+
 /******************************************************************************
 	* 
 	*   INCLUDED FILES
@@ -18,13 +30,12 @@
 	*****************************************************************************/
 	
 	
-#include <stdint.h>
+#include "typesAndConstants.h"
 #include "misc.h"
 #include "stm32f10x.h"
 #include "stm32f10x_tim.h"
 #include "stm32f10x_adc.h"
 #include "stm32f10x_gpio.h"
-#include "stm32f10x_dma.h"
 #include "stm32f10x_rcc.h"
 #include "sampleAcquisition.h"
 
@@ -56,8 +67,6 @@ void RCC_Configuration(void)
 {
 	// Defines the ADC clock divider, this clock is derived from the APB2 clock (PCLK2)
 	RCC_ADCCLKConfig( RCC_PCLK2_Div6 );
-	// Enable DMA1 clock
-	RCC_AHBPeriphClockCmd( RCC_AHBPeriph_DMA1 , ENABLE );
 	// Enable GPIOC, ADC1 and TIM1 clock
 	RCC_APB2PeriphClockCmd( RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_ADC1 | RCC_APB2Periph_TIM1 , ENABLE );
 }
@@ -78,44 +87,36 @@ void GPIO_Configuration(void)
   GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_AF_PP;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-  // Configure PC.00 (ADC Channel 10) as analog input
+	// Configure PB.00 (ADC1 Channel 8) as analog input
   GPIO_InitStructure.GPIO_Pin = 	GPIO_Pin_0;
-  GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_AIN;
+	// Configure PB.01 (ADC1 Channel 9) as analog input
+  GPIO_InitStructure.GPIO_Pin |= 	GPIO_Pin_1;
+  
+	GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_AIN;	
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	
+  // Configure PC.00 (ADC1 Channel 10) as analog input
+  GPIO_InitStructure.GPIO_Pin = 	GPIO_Pin_0;
+	// Configure PC.01 (ADC1 Channel 11) as analog input
+  GPIO_InitStructure.GPIO_Pin |= 	GPIO_Pin_1;
+	// Configure PC.02 (ADC1 Channel 12) as analog input
+  GPIO_InitStructure.GPIO_Pin |= 	GPIO_Pin_2;
+	// Configure PC.03 (ADC1 Channel 13) as analog input
+  GPIO_InitStructure.GPIO_Pin |= 	GPIO_Pin_3;
+	// Configure PC.04 (ADC1 Channel 14) as analog input
+  GPIO_InitStructure.GPIO_Pin |= 	GPIO_Pin_4;
+	// Configure PC.05 (ADC1 Channel 15) as analog input
+  GPIO_InitStructure.GPIO_Pin |= 	GPIO_Pin_5;
+	
+	GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_AIN;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
 	
-	// First LED on the board (B.05)
-	GPIO_InitStructure.GPIO_Pin = 	GPIO_Pin_5;
+	// LED on the board (A.01)
+	GPIO_InitStructure.GPIO_Pin = 	GPIO_Pin_1;
   GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_Out_PP;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 
-/**
-  * @brief  Configures the DMA.
-  * @param  None
-  * @retval None
-  */
-void DMA_Configuration(void)
-{
-	DMA_InitTypeDef DMA_InitStructure; // Structure to initialize the DMA
-
-	// Configure DMA1 on channel 1
-	DMA_InitStructure.DMA_PeripheralBaseAddr = 	ADC1_DR_Address;//ADC1_DR_Address; // Address of peripheral the DMA must map to
-	DMA_InitStructure.DMA_MemoryBaseAddr = 			(uint32_t) &adcBuffer; // Variable to which ADC values will be stored
-	DMA_InitStructure.DMA_DIR = 								DMA_DIR_PeripheralSRC;
-	DMA_InitStructure.DMA_BufferSize = 					SIGNAL_BUFFER_SIZE; // In data unit (see periph and memory data size fields)
-	DMA_InitStructure.DMA_PeripheralInc = 			DMA_PeripheralInc_Disable;
-	DMA_InitStructure.DMA_MemoryInc = 					DMA_MemoryInc_Enable;
-	DMA_InitStructure.DMA_PeripheralDataSize = 	DMA_PeripheralDataSize_HalfWord;
-	DMA_InitStructure.DMA_MemoryDataSize = 			DMA_MemoryDataSize_HalfWord;
-	DMA_InitStructure.DMA_Mode = 								DMA_Mode_Circular;
-	DMA_InitStructure.DMA_Priority = 						DMA_Priority_High;
-	DMA_InitStructure.DMA_M2M = 								DMA_M2M_Disable; // Memory to memory
-
-	//Initialise and enable DMA1
-	DMA_DeInit( DMA1_Channel1 ); //Set DMA registers to default values
-	DMA_Init( DMA1_Channel1, &DMA_InitStructure );
-	DMA_Cmd( DMA1_Channel1, ENABLE );
-}
 
 /**
   * @brief  Configures the ADC.
@@ -126,26 +127,33 @@ void ADC_Configuration(void)
 {
 	ADC_InitTypeDef ADC_InitStructure; // Structure to initialize the ADC
 
-	// Configure ADC1 on channel 1
+	// Common config
 	ADC_InitStructure.ADC_Mode = 								ADC_Mode_Independent;
-	ADC_InitStructure.ADC_ScanConvMode = 				DISABLE; // One channel only
+	ADC_InitStructure.ADC_ScanConvMode = 				ENABLE; // One channel only
 	ADC_InitStructure.ADC_ContinuousConvMode = 	DISABLE; // Conversion on PWM rising edge only
 	ADC_InitStructure.ADC_ExternalTrigConv = 		ADC_ExternalTrigConv_T1_CC1; // Timer 1 CC1
 	ADC_InitStructure.ADC_DataAlign = 					ADC_DataAlign_Right;
-	ADC_InitStructure.ADC_NbrOfChannel = 				1;
+	ADC_InitStructure.ADC_NbrOfChannel = 				8;
 
-	// Initialise and enable ADC1
 	ADC_DeInit( ADC1 ); //Set ADC registers to default values
-	ADC_Init( ADC1, &ADC_InitStructure ); 
-	ADC_RegularChannelConfig( ADC1, ADC_Channel_10, 1, ADC_SampleTime_71Cycles5);
+	ADC_Init( ADC1, &ADC_InitStructure );
+	
+	// Channels config
+	ADC_RegularChannelConfig( ADC1, ADC_Channel_8, 1, ADC_SampleTime_1Cycles5);
+	ADC_RegularChannelConfig( ADC1, ADC_Channel_9, 2, ADC_SampleTime_1Cycles5);
+	ADC_RegularChannelConfig( ADC1, ADC_Channel_10, 3, ADC_SampleTime_1Cycles5);
+	ADC_RegularChannelConfig( ADC1, ADC_Channel_11, 4, ADC_SampleTime_1Cycles5);
+	ADC_RegularChannelConfig( ADC1, ADC_Channel_12, 5, ADC_SampleTime_1Cycles5);
+	ADC_RegularChannelConfig( ADC1, ADC_Channel_13, 6, ADC_SampleTime_1Cycles5);
+	ADC_RegularChannelConfig( ADC1, ADC_Channel_14, 7, ADC_SampleTime_1Cycles5);
+	ADC_RegularChannelConfig( ADC1, ADC_Channel_15, 8, ADC_SampleTime_1Cycles5);
 	
 	// Start transferts
   ADC_ExternalTrigConvCmd( ADC1, ENABLE ); // Enable ADC1 external trigger
-	ADC_DMACmd( ADC1, ENABLE ); //Enable ADC1 DMA
 	ADC_Cmd( ADC1, ENABLE ); //Enable ADC1
 
-  // Enable JEOC interrupt
-  //ADC_ITConfig(ADC1, ADC_IT_JEOC, ENABLE);
+  // Enable End Of Conversion interrupt
+  ADC_ITConfig(ADC1, ADC_IT_EOC, ENABLE);
 
 	// Calibrate ADC1
 	ADC_ResetCalibration( ADC1 );
@@ -166,13 +174,14 @@ void TIMER_Configuration(void)
 	
 	// Time Base configuration
   TIM_TimeBaseStructInit( &TIM_TimeBaseStructure ); 
-  TIM_TimeBaseStructure.TIM_Period = 				0x231;          
+  TIM_TimeBaseStructure.TIM_Period = 				360;  // 36MHz / 360 = 100kHz  
   TIM_TimeBaseStructure.TIM_Prescaler = 		0x0;       
   TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;    
   TIM_TimeBaseStructure.TIM_CounterMode = 	TIM_CounterMode_Down;  
   TIM_TimeBaseInit( TIM1, &TIM_TimeBaseStructure );
 	
   // TIM1 channel1 configuration in PWM mode
+	TIM_OCStructInit( &TIM_OCInitStructure );
   TIM_OCInitStructure.TIM_OCMode = 			TIM_OCMode_PWM1; 
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;                
   TIM_OCInitStructure.TIM_OCPolarity = 	TIM_OCPolarity_High;         
@@ -185,7 +194,7 @@ void TIMER_Configuration(void)
 }
 	
 /**
-  * @brief  Configures the Timer.
+  * @brief  Configures the ITs.
   * @param  None
   * @retval None
   */
@@ -199,17 +208,7 @@ void IT_Configuration(void)
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 				2;
   NVIC_InitStructure.NVIC_IRQChannelCmd = 								ENABLE;
   NVIC_Init( &NVIC_InitStructure );
-
-	// Enable the DMA global Interrupt
-	NVIC_InitStructure.NVIC_IRQChannel = 										DMA1_Channel1_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 	5;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 				2;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = 								ENABLE;
-	NVIC_Init( &NVIC_InitStructure );
 	
-	// DMA IT
-	DMA_ITConfig( DMA1_Channel1, DMA1_FLAG_HT1, ENABLE ); // Half transfer interrupt
-	DMA_ITConfig( DMA1_Channel1, DMA1_FLAG_TC1, ENABLE ); // Transfer complete interrupt
 }
 
 /******************************************************************************
@@ -218,51 +217,33 @@ void IT_Configuration(void)
 	*
 	*****************************************************************************/
 
-/********************************************************************************
-	* sampleAcquisitionInit
-	*
-	*      Init the sampling routine.
-	*				Blocking function.
-	* 			
-	* @param Void
-	* @return 0 if working
-	*******************************************************************************/
+
 /**
- * @brief Interrupt handler of DCMI DMA stream
- */
-void DMAChannel1_IRQHandler( void )
+	* @brief		Handler for ADC interrupts
+	* @details	This hendler will be called on each conversion of ADC1.
+	*						It allows to update strength data on each conversion.
+	*/
+void ADC1_2_IRQHandler(void)
 {
-	
-	if ( DMA_GetITStatus( DMA1_IT_HT1 ) != RESET ) // Half buffer
+	// If end of conversion
+	if( ADC_GetITStatus(ADC1, ADC_IT_EOC) == SET )
 	{
-		DMA_ClearITPendingBit( DMA1_IT_HT1 );
-		
-		//setLEDAcquisition( ON );
-		
-		idDataToProcess = 0;
+		// Update signal strength for this channel
+		//updateSignalStrength(ADC_GetConversionValue(ADC1));
+		ADC_GetConversionValue(ADC1);
 	}
-	else if ( DMA_GetITStatus( DMA1_IT_TC1 ) != RESET ) // Full buffer
-	{
-		DMA_ClearITPendingBit( DMA1_IT_TC1 );
-		
-		//setLEDAcquisition( OFF );
-		
-		idDataToProcess = SIGNAL_HALF_BUFFER_SIZE;
-	}
+	// Else, do nothing
 	
-	//signalProcessing();
-	
+	// End of Interrupt
+	ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
 }
 
-/********************************************************************************
-	* sampleAcquisitionInit
-	*
-	*      Init the sampling routine.
-	*				Blocking function.
+/**
+	* @brief	Init the sampling routine.
+	*					Blocking function.
 	* 			
 	* @param Void
-	* @return 0 if working
-	*******************************************************************************/
+	*/
 void sampleAcquisitionInit( void )
 {
 	/*****************
@@ -276,12 +257,6 @@ void sampleAcquisitionInit( void )
 	 ********/
 
 	GPIO_Configuration();
-	
-	/*******
-	 * DMA *
-	 *******/
-
-	DMA_Configuration();
 	
 	/*******
 	 * ADC *

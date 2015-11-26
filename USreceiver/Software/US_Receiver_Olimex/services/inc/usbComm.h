@@ -25,6 +25,8 @@
 	*****************************************************************************/
 
 void usbCommInit( void );
+
+void usbCommInitPeriodicSending(void);
 	
 void usbCommSendChar( uint8_t c );
 

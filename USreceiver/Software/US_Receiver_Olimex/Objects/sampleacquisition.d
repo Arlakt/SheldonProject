@@ -1,4 +1,5 @@
 .\objects\sampleacquisition.o: services\src\sampleAcquisition.c
+.\objects\sampleacquisition.o: .\application\inc\typesAndConstants.h
 .\objects\sampleacquisition.o: F:\Programmes\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\sampleacquisition.o: .\drivers\inc_peripherals\misc.h
 .\objects\sampleacquisition.o: .\drivers\inc_peripherals\stm32f10x.h

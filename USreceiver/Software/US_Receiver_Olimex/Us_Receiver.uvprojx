@@ -503,14 +503,14 @@
               <FilePath>.\drivers\src_peripherals\stm32f10x_dma.c</FilePath>
             </File>
             <File>
-              <FileName>stm32f10x_exti.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\drivers\src_peripherals\stm32f10x_exti.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32f10x_flash.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\drivers\src_peripherals\stm32f10x_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drivers\src_peripherals\stm32f10x_exti.c</FilePath>
             </File>
             <File>
               <FileName>stm32f10x_fsmc.c</FileName>

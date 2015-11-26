@@ -64,8 +64,7 @@ int main (void)
 	//signalTraitementInit();
 	
 	// Signals acquisition
-	//sampleAcquisitionInit();
-	//sampleAcquisitionInit();
+	sampleAcquisitionInit();
 	
 	/***********
 	 * Process *
@@ -74,9 +73,7 @@ int main (void)
 	
 	while(1)
 	{
-		usbCommWaitInput();
-		createSerialFrameForSignalStrengths(frame, signalStrengths, 8, &size);
-		usbCommSendData(frame, size);
+		
 	}
 
 	return 0;

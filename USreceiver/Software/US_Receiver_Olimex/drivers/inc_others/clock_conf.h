@@ -15,8 +15,8 @@
  * Tout droits réservés.
  */
  
- /**
-  * \section Current Configuration
+ /**\page Clocks configuration
+  * \section Clock tree configuration
 	*
 	* Crystal 8 MHz (HSE input)
 	* PLL prescaler /1 ; PLL Multiplier x9 ==> PLLCLK = 72 MHz
