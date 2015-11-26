@@ -22,6 +22,7 @@
 #include "serialFrame.h"
 #include "usbComm.h"
 #include "sampleAcquisition.h"
+#include "signalProcessing.h"
 	
 /******************************************************************************
 	*
@@ -43,10 +44,6 @@ int main (void)
 	/******************
 	 * Main variables *
 	 ******************/
-	uint8_t frame[50] = {0};
-	uint16_t size = 0;
-	
-	uint16_t signalStrengths[8] = {1,2,3,4,5,6,7,8};
 	
 	/*******************
 	 * Initializations *
@@ -60,8 +57,8 @@ int main (void)
 	// USB communication
 	usbCommInit();	
 
-	// Signals filtering
-	//signalTraitementInit();
+	// Signals processing
+	sProcInit();
 	
 	// Signals acquisition
 	sampleAcquisitionInit();

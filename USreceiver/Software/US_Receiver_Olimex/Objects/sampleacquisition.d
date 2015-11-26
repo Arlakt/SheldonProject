@@ -33,3 +33,4 @@
 .\objects\sampleacquisition.o: .\drivers\inc_peripherals\stm32f10x_wwdg.h
 .\objects\sampleacquisition.o: .\drivers\inc_peripherals\misc.h
 .\objects\sampleacquisition.o: .\services\inc\sampleAcquisition.h
+.\objects\sampleacquisition.o: .\services\inc\signalProcessing.h

@@ -24,6 +24,7 @@
 #include "misc.h"
 #include "usb_cdc.h"
 #include "serialFrame.h"
+#include "signalProcessing.h"
 
 
 	
@@ -73,8 +74,8 @@ void usbCommInitPeriodicSending(void)
 	// Timer 2 config
 	RCC_APB1PeriphClockCmd( RCC_APB1Periph_TIM2 , ENABLE );
   TIM_TimeBaseStructInit( &TIM_TimeBaseStructure ); 
-  TIM_TimeBaseStructure.TIM_Period = 				36000;  // 36MHz / 36000 = 1kHz  
-  TIM_TimeBaseStructure.TIM_Prescaler = 		0x0;       
+  TIM_TimeBaseStructure.TIM_Period = 				10000;  // 10kHz / 10000 = 1Hz  
+  TIM_TimeBaseStructure.TIM_Prescaler = 		7200;   // 72MHz / 7200 = 10kHz    
   TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;    
   TIM_TimeBaseStructure.TIM_CounterMode = 	TIM_CounterMode_Down;  
   TIM_TimeBaseInit( TIM2, &TIM_TimeBaseStructure );
@@ -99,7 +100,22 @@ void usbCommInitPeriodicSending(void)
 	*/
 void TIM2_IRQHandler (void)
 {
+	uint16_t signalsStrength[NB_OF_SIGNALS];
+	uint8_t frame[NB_OF_SIGNALS*2 + 2];
+	uint8_t size = 0;
+	uint16_t frameSize = 0;
 	
+	// Get current signals strength
+	sProcGetSignalsStrengthValues(signalsStrength, &size);
+	
+	// Create the frame
+	createSerialFrameForSignalsStrength(frame, signalsStrength, NB_OF_SIGNALS, &frameSize);
+	
+	// Send the frame
+	usbCommSendData(frame, frameSize);
+	
+	// Reset signals strength processing
+	sProcResetSignalData();
 	
 	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 }

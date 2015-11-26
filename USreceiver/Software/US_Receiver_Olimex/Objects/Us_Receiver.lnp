@@ -4,6 +4,7 @@
 ".\objects\sampleacquisition.o"
 ".\objects\serialframe.o"
 ".\objects\usbcomm.o"
+".\objects\signalprocessing.o"
 ".\objects\clock.o"
 ".\objects\misc.o"
 ".\objects\stm32f10x_adc.o"

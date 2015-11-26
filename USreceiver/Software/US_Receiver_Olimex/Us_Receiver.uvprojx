@@ -442,6 +442,11 @@
               <FileType>1</FileType>
               <FilePath>.\services\src\usbComm.c</FilePath>
             </File>
+            <File>
+              <FileName>signalProcessing.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\services\src\signalProcessing.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

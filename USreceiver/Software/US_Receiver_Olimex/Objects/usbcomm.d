@@ -47,3 +47,4 @@
 .\objects\usbcomm.o: .\drivers\inc_usb_md_cdc\hw_config.h
 .\objects\usbcomm.o: .\drivers\inc_usb_md_cdc\usb_pwr.h
 .\objects\usbcomm.o: .\services\inc\serialFrame.h
+.\objects\usbcomm.o: .\services\inc\signalProcessing.h

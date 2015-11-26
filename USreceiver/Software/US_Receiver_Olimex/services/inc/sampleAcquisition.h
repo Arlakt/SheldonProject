@@ -5,11 +5,9 @@
 	*     This file contains the service for acquire sample from the ADC.
 	*			Initialization, configuration and start. The status LED toggles at each valid sample saved.
 	*
-	* 		Last modification : 07 Nov 2014
 	*
-	* @author Miquèl RAYNAL
-	* @version 0.1
-	* @date 29 Oct 2014
+	* @author Romain TAPREST
+	* @date 26 nov 2015
 	*/
 
 
@@ -42,12 +40,6 @@
 
 extern uint16_t adcBuffer[SIGNAL_BUFFER_SIZE];		// Static buffer to save a signal
 extern uint16_t idDataToProcess;
-
-/******************************************************************************
-	*
-	*   PRIVATE FUNCTIONS
-	*
-	*****************************************************************************/
 
 
 /******************************************************************************

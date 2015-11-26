@@ -38,7 +38,7 @@
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_rcc.h"
 #include "sampleAcquisition.h"
-
+#include "signalProcessing.h"
 
 
 /******************************************************************************
@@ -229,8 +229,7 @@ void ADC1_2_IRQHandler(void)
 	if( ADC_GetITStatus(ADC1, ADC_IT_EOC) == SET )
 	{
 		// Update signal strength for this channel
-		//updateSignalStrength(ADC_GetConversionValue(ADC1));
-		ADC_GetConversionValue(ADC1);
+		sProcUpdateSignalStrength(ADC_GetConversionValue(ADC1));
 	}
 	// Else, do nothing
 	

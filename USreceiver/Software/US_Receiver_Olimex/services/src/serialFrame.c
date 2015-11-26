@@ -29,11 +29,11 @@
 	*	@warning	frame[] size must be at least = nbOfSignals*2 + 2
 	*
 	* @param	frame[out]					Array of bytes in which the frame will be written (size must be large enough !)
-	* @param	signalStrenghts[in]	Array of raw signal strengths on 16 bits
+	* @param	signalsStrenght[in]	Array of raw signal strengths on 16 bits
 	* @param	nbOfSignals					Size of the signalStrengths array
 	* @param	frameSize						Final size of the frame stored in the frame[] array (nb of bytes to send)
 	*/
-void createSerialFrameForSignalStrengths(uint8_t frame[], uint16_t signalStrengths[], uint8_t nbOfSignals, uint16_t *frameSize)
+void createSerialFrameForSignalsStrength(uint8_t frame[], uint16_t signalsStrength[], uint8_t nbOfSignals, uint16_t *frameSize)
 {
 	uint8_t i=0;
 	
@@ -42,16 +42,17 @@ void createSerialFrameForSignalStrengths(uint8_t frame[], uint16_t signalStrengt
 	frame[*frameSize] = START_OF_FRAME;
 	(*frameSize)++;
 	
+	frame[*frameSize] = START_OF_FRAME;
+	(*frameSize)++;
+	
 	for(i=0;i<nbOfSignals;i++)
 	{
-		frame[*frameSize] = (uint8_t) (signalStrengths[i] & 0xFF);
+		frame[*frameSize] = (uint8_t) (signalsStrength[i] & 0xFF);
 		(*frameSize)++;
-		frame[*frameSize] = (uint8_t) ((signalStrengths[i] >> 8) & 0xFF);
+		frame[*frameSize] = (uint8_t) ((signalsStrength[i] >> 8) & 0xFF);
 		(*frameSize)++;
 	}
 	
-	frame[*frameSize] = END_OF_FRAME;
-	(*frameSize)++;
 }
 
 

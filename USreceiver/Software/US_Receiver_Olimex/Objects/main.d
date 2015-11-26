@@ -35,3 +35,4 @@
 .\objects\main.o: .\services\inc\serialFrame.h
 .\objects\main.o: .\services\inc\usbComm.h
 .\objects\main.o: .\services\inc\sampleAcquisition.h
+.\objects\main.o: .\services\inc\signalProcessing.h
