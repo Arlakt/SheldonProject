@@ -24,15 +24,9 @@ void serial_config(int fd)
 	tcsetattr(fd, TCSAFLUSH, &options);
 }
 
-
-int main(int argc, char * argv[])
+int serial_init(char * device)
 {
-	if (argc < 2) {
-		fprintf(stderr, "Usage: %s device\n", argv[0]);
-		return 1;
-	}
-
-	int fd = open(argv[1], O_RDWR | O_NOCTTY | O_NDELAY);
+	int fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
 	if (fd == -1) {
 		perror("Unable to open device");
 		return 1;
@@ -41,6 +35,17 @@ int main(int argc, char * argv[])
 	fcntl(fd, F_SETFL, FNDELAY);  // Set non-blocking read
 
 	//serial_config(fd);
+}
+
+
+int main(int argc, char * argv[])
+{
+	if (argc < 2) {
+		fprintf(stderr, "Usage: %s device\n", argv[0]);
+		return 1;
+	}
+
+	int fd = serial_init(argv[1]) ;
 
 	int n = write(fd, "S", 1);
 	if (n < 0) {
