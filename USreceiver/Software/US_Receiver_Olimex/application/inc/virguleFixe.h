@@ -1,4 +1,0 @@
-#ifndef S_SAMPLEACQUISITION_H
-#define S_SAMPLEACQUISITION_H
-
-struct 

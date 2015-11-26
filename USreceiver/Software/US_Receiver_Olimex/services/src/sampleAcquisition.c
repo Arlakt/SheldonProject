@@ -5,11 +5,9 @@
 	*     This file contains the service for acquire sample from the ADC.
 	*			Initialization, configuration and start. The status LED turn on at each acquisition.
 	*			
-	* 		Last modification : 07 Nov 2014
 	*
-	* @author Miquèl RAYNAL
-	* @version 0.1
-	* @date 29 Oct 2014
+	* @author Romain TAPREST
+	* @date 26 nov 2015
 	*/
 
 
@@ -29,7 +27,6 @@
 #include "stm32f10x_dma.h"
 #include "stm32f10x_rcc.h"
 #include "sampleAcquisition.h"
-#include "global.h"
 
 
 
@@ -50,19 +47,6 @@ uint16_t idDataToProcess = 0;
 	*****************************************************************************/
 	
 	
-/*******************************************************************************
-	* setLEDAcquisition
-	*
-	*			Set the acquisition LED (3rd pin)
-	* 			
-	* @param Void  
-	* @return Void
-	******************************************************************************/
-void setLEDAcquisition( uint8_t status )
-{
-		GPIO_Write( GPIOB, 5, status );		// Toggle status LED
-}
-
 /**
   * @brief  Configures the different system clocks.
   * @param  None
@@ -253,7 +237,7 @@ void DMAChannel1_IRQHandler( void )
 	{
 		DMA_ClearITPendingBit( DMA1_IT_HT1 );
 		
-		setLEDAcquisition( ON );
+		//setLEDAcquisition( ON );
 		
 		idDataToProcess = 0;
 	}
@@ -261,12 +245,12 @@ void DMAChannel1_IRQHandler( void )
 	{
 		DMA_ClearITPendingBit( DMA1_IT_TC1 );
 		
-		setLEDAcquisition( OFF );
+		//setLEDAcquisition( OFF );
 		
 		idDataToProcess = SIGNAL_HALF_BUFFER_SIZE;
 	}
 	
-	signalProcessing();
+	//signalProcessing();
 	
 }
 

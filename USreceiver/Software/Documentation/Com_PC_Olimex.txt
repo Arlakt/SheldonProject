@@ -7,12 +7,12 @@ title Communication between receiver board and embedded PC
 
 hnote over "Receiver Board" : Measures
 
+"Receiver Board" -> "Drone PC" : Start - 0xFA
 "Receiver Board" -> "Drone PC" : Data[0] - 1st byte
 "Receiver Board" -> "Drone PC" : Data[0] - 2nd byte
 note left
 Data[0]
 end note
-
 "Receiver Board" -> "Drone PC" : Data[1] - 1st byte
 "Receiver Board" -> "Drone PC" : Data[1] - 2nd byte
 note left
@@ -20,9 +20,11 @@ Data[1]
 end note
 
 ... ...
+"Receiver Board" -> "Drone PC" : EndOfFrame - 0xFF
 
 hnote over "Receiver Board" : Measures
 
+"Receiver Board" -> "Drone PC" : Start - 0xFA
 "Receiver Board" -> "Drone PC" : Data[0] - 1st byte
 "Receiver Board" -> "Drone PC" : Data[0] - 2nd byte
 note left
@@ -34,6 +36,7 @@ end note
 
 hnote over "Receiver Board" : Measures
 
+"Receiver Board" -> "Drone PC" : Start - 0xFA
 "Receiver Board" -> "Drone PC" : Data[0] - 1st byte
 "Receiver Board" -> "Drone PC" : Data[0] - 2nd byte
 note left

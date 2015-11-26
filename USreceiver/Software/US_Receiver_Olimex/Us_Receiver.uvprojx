@@ -417,16 +417,6 @@
               <FileType>1</FileType>
               <FilePath>.\application\src\main.c</FilePath>
             </File>
-            <File>
-              <FileName>signalFilter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\application\src\signalFilter.c</FilePath>
-            </File>
-            <File>
-              <FileName>virguleFixe.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\application\src\virguleFixe.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -448,11 +438,6 @@
               <FilePath>.\services\src\serialFrame.c</FilePath>
             </File>
             <File>
-              <FileName>uartComm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\services\src\uartComm.c</FilePath>
-            </File>
-            <File>
               <FileName>usbComm.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\services\src\usbComm.c</FilePath>
@@ -466,16 +451,6 @@
               <FileName>clock.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\drivers\src_others\clock.c</FilePath>
-            </File>
-            <File>
-              <FileName>usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\drivers\src_others\usart.c</FilePath>
-            </File>
-            <File>
-              <FileName>xprintf.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\drivers\src_others\xprintf.c</FilePath>
             </File>
           </Files>
         </Group>

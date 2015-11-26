@@ -1,4 +1,6 @@
 .\objects\usbcomm.o: services\src\usbComm.c
+.\objects\usbcomm.o: .\services\inc\usbComm.h
+.\objects\usbcomm.o: .\application\inc\typesAndConstants.h
 .\objects\usbcomm.o: F:\Programmes\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\usbcomm.o: .\drivers\inc_peripherals\stm32f10x.h
 .\objects\usbcomm.o: .\drivers\inc_peripherals\CMSIS/core_cm3.h
@@ -30,7 +32,6 @@
 .\objects\usbcomm.o: .\drivers\inc_peripherals\stm32f10x_usart.h
 .\objects\usbcomm.o: .\drivers\inc_peripherals\stm32f10x_wwdg.h
 .\objects\usbcomm.o: .\drivers\inc_peripherals\misc.h
-.\objects\usbcomm.o: .\drivers\inc_others\gpio.h
 .\objects\usbcomm.o: .\drivers\inc_usb_md_cdc\usb_cdc.h
 .\objects\usbcomm.o: .\drivers\inc_usb_md_cdc\usb_lib.h
 .\objects\usbcomm.o: .\drivers\inc_usb_md_cdc\usb_type.h
@@ -45,17 +46,4 @@
 .\objects\usbcomm.o: .\drivers\inc_usb_md_cdc\usb_desc.h
 .\objects\usbcomm.o: .\drivers\inc_usb_md_cdc\hw_config.h
 .\objects\usbcomm.o: .\drivers\inc_usb_md_cdc\usb_pwr.h
-.\objects\usbcomm.o: .\services\inc\usbComm.h
-.\objects\usbcomm.o: .\application\inc\global.h
-.\objects\usbcomm.o: F:\Programmes\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\objects\usbcomm.o: .\drivers\inc_others\Clock.h
-.\objects\usbcomm.o: .\drivers\inc_others\Timer_1234.h
-.\objects\usbcomm.o: .\drivers\inc_others\GPIO.h
-.\objects\usbcomm.o: .\drivers\inc_others\xprintf.h
-.\objects\usbcomm.o: .\services\inc\sampleAcquisition.h
-.\objects\usbcomm.o: .\services\inc\uartComm.h
-.\objects\usbcomm.o: .\application\inc\signalFilter.h
-.\objects\usbcomm.o: .\application\inc\global.h
-.\objects\usbcomm.o: F:\Programmes\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 .\objects\usbcomm.o: .\services\inc\serialFrame.h
-.\objects\usbcomm.o: .\services\inc\frameTypes.h

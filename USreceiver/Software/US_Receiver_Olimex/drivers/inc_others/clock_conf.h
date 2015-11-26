@@ -14,6 +14,23 @@
  * Copyright (c) 2012, INSA-GEI Toulouse, France.
  * Tout droits réservés.
  */
+ 
+ /**
+  * \section Current Configuration
+	*
+	* Crystal 8 MHz (HSE input)
+	* PLL prescaler /1 ; PLL Multiplier x9 ==> PLLCLK = 72 MHz
+	* USB prescaler /1.5 ==> USB clock = 48 MHz (also modified in USB init functions)
+	* ==> SYSCLK = 72MHz
+	* AHB Prescaler /1 ; ==> HCLK = 72MHz
+	* APB2 prescaler /1 ; ==> PCLK2 = 72 MHz 
+	* ADC Prescaler /6 ==> ADC clock = 12 MHz
+	* APB1 prescaler /2 ==> Timer clocks = 36 MHz
+	*
+	*/
+ 
+ 
+ 
 
 #ifndef __CLOCK_CONF_H__
 #define __CLOCK_CONF_H__
@@ -180,7 +197,7 @@
 #ifdef STM32F10X_CL
 	#define _USB_PRE 3
 #else
-	#define _USB_PRE 1
+	#define _USB_PRE _USB_PRE_1_5
 #endif
 
 /**

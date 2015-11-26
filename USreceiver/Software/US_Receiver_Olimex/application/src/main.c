@@ -5,11 +5,9 @@
 	*      This file contains the main function that initializes, configurates
 	* 			and start all applications with their services. 
 	*
-	*			Last modification : 25 Oct 2014
 	*
-	* @author Miquèl RAYNAL
-	* @version 0.1
-	* @date 25 Oct 2014
+	* @author Romain TAPREST
+	* @date 26 nov 2015
 	*/
 
 /******************************************************************************
@@ -18,7 +16,12 @@
 	*
 	*****************************************************************************/
 
-#include "global.h"
+#include "typesAndconstants.h"
+#include "stm32f10x.h"
+#include "Clock.h"
+#include "serialFrame.h"
+#include "usbComm.h"
+#include "sampleAcquisition.h"
 	
 /******************************************************************************
 	*
@@ -27,11 +30,6 @@
 	*****************************************************************************/
 	
 	
-void Clignote(void)		// Interruption routine
-{
-	//GPIO_Toggle(GPIOC, 12);
-}
-
 
 /******************************************************************************
 	*
@@ -45,7 +43,10 @@ int main (void)
 	/******************
 	 * Main variables *
 	 ******************/
-
+	uint8_t frame[50] = {0};
+	uint16_t size = 0;
+	
+	uint16_t signalStrengths[8] = {1,2,3,4,5,6,7,8};
 	
 	/*******************
 	 * Initializations *
@@ -53,24 +54,9 @@ int main (void)
 	
 	
 	// Clock
-	CLOCK_Configure();		// Initialization of the system clock
-												//	- If the compilation key STM32F107 is defined, the CPU is clocked at 50MHz
-												//  - Else (STM32F107 non defined), the CPU is clocked at 40MHz
+	CLOCK_Configure();		// Initialization of the whole clock tree
+												// See clock_conf.h for more info on current config
 
-	// GPIO (Stat LED)
-	//GPIO_Configure( GPIOC, 12, OUTPUT, OUTPUT_PPULL ); // Led Stat
-	GPIO_Clear( GPIOC, 12 );
-	
-	// Timer
-	//Timer_1234_Init( TIM2, 100000.0 );	// Configuration of Timer 2 (float value un µs)
-																									// Real_period contains the real period as close as demanded
-
-	// IT on timer overflow
-	//Active_IT_Debordement_Timer( TIM2, 1, Clignote );  // Allows interrupt for Timer 2 overflow (priority 1)
-  
-	// UART communication
-	//uartCommInit();
-	
 	// USB communication
 	usbCommInit();	
 
@@ -84,14 +70,13 @@ int main (void)
 	/***********
 	 * Process *
 	 ***********/
-	
 
+	
 	while(1)
 	{
-		//usbCommSendData( (uint8_t *)signal, NB_SAMPLES_TOTAL*2 ); // Sending NB_SAMPLES_TOTAL of uint16_t
-		//usbCommSendCoefficients( coefficient[0], coefficient[1], coefficient[2], coefficient[3] );
-		usbCommLoopBack();
-			
+		usbCommWaitInput();
+		createSerialFrameForSignalStrengths(frame, signalStrengths, 8, &size);
+		usbCommSendData(frame, size);
 	}
 
 	return 0;
