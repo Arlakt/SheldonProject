@@ -90,7 +90,7 @@ void serialEvent(Serial myPort) {
   if(signalNumber >= 8)
   {
     for (int x=0;x<8;x++){
-      SignalStrengthCorner[x] = (int)(dataBeingConstructed[x] * (long)maxRange / 65536);
+      SignalStrengthCorner[x] = (int)(dataBeingConstructed[x] * (long)maxRange / 50000); // should be 65536 but there is a problem and values don't go so high
     }
     signalNumber = 0;
     startByte = 0;

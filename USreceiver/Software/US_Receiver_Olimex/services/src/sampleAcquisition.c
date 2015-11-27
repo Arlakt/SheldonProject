@@ -37,6 +37,7 @@
 #include "stm32f10x_adc.h"
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_rcc.h"
+#include "stm32f10x_dma.h"
 #include "sampleAcquisition.h"
 #include "signalProcessing.h"
 
@@ -47,6 +48,9 @@
 	*
 	*****************************************************************************/
 extern t_signalsData g_signalData;
+
+#define SIGNAL_BUFFER_SIZE	NB_OF_SIGNALS
+uint16_t adcBuffer[SIGNAL_BUFFER_SIZE];
 
 /******************************************************************************
 	*
@@ -64,6 +68,8 @@ void RCC_Configuration(void)
 {
 	// Defines the ADC clock divider, this clock is derived from the APB2 clock (PCLK2)
 	RCC_ADCCLKConfig( RCC_PCLK2_Div6 );
+	// Enable DMA1 clock
+	RCC_AHBPeriphClockCmd( RCC_AHBPeriph_DMA1 , ENABLE );
 	// Enable GPIOC, ADC1 and TIM1 clock
 	RCC_APB2PeriphClockCmd( RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_ADC1 | RCC_APB2Periph_TIM1 , ENABLE );
 }
@@ -114,6 +120,39 @@ void GPIO_Configuration(void)
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 
+/**
+  * @brief  Configures the DMA.
+  * @param  None
+  * @retval None
+  */
+void DMA_Configuration(void)
+{
+	DMA_InitTypeDef DMA_InitStructure; // Structure to initialize the DMA
+
+	// Configure DMA1 on channel 1
+	DMA_InitStructure.DMA_PeripheralBaseAddr = 	ADC1_DR_Address;//ADC1_DR_Address; // Address of peripheral the DMA must map to
+	DMA_InitStructure.DMA_MemoryBaseAddr = 			(uint32_t) &adcBuffer; // Variable to which ADC values will be stored
+	DMA_InitStructure.DMA_DIR = 								DMA_DIR_PeripheralSRC;
+	DMA_InitStructure.DMA_BufferSize = 					SIGNAL_BUFFER_SIZE; // In data unit (see periph and memory data size fields)
+	DMA_InitStructure.DMA_PeripheralInc = 			DMA_PeripheralInc_Disable;
+	DMA_InitStructure.DMA_MemoryInc = 					DMA_MemoryInc_Enable;
+	DMA_InitStructure.DMA_PeripheralDataSize = 	DMA_PeripheralDataSize_HalfWord;
+	DMA_InitStructure.DMA_MemoryDataSize = 			DMA_MemoryDataSize_HalfWord;
+	DMA_InitStructure.DMA_Mode = 								DMA_Mode_Circular;
+	DMA_InitStructure.DMA_Priority = 						DMA_Priority_High;
+	DMA_InitStructure.DMA_M2M = 								DMA_M2M_Disable; // Memory to memory
+	
+	DMA_DeInit( DMA1_Channel1 ); //Set DMA registers to default values
+	DMA_Init( DMA1_Channel1, &DMA_InitStructure );
+	
+	// DMA IT
+	DMA_ITConfig( DMA1_Channel1, DMA_IT_TC, ENABLE ); // Transfer complete interrupt
+	DMA_ClearITPendingBit( DMA1_IT_TC1 );
+
+	// enable DMA1
+	DMA_Cmd( DMA1_Channel1, ENABLE );
+}
+
 
 /**
   * @brief  Configures the ADC.
@@ -151,6 +190,7 @@ void ADC_Configuration(void)
 	
 	// Start transferts
   ADC_ExternalTrigConvCmd( ADC1, ENABLE ); // Enable ADC1 external trigger
+	ADC_DMACmd( ADC1, ENABLE ); //Enable ADC1 DMA
 	ADC_Cmd( ADC1, ENABLE ); //Enable ADC1
 
 	// Calibrate ADC1
@@ -203,19 +243,19 @@ void IT_Configuration(void)
 {
   NVIC_InitTypeDef NVIC_InitStructure; // IT
 
-  // Configure and enable ADC interrupt
-  NVIC_InitStructure.NVIC_IRQChannel = 										ADC1_2_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 	3;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 				2;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = 								ENABLE;
-  NVIC_Init( &NVIC_InitStructure );
-	
 	// Configure and enable TIM1 interrupt
   NVIC_InitStructure.NVIC_IRQChannel = 										TIM1_UP_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 	4;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 				2;
   NVIC_InitStructure.NVIC_IRQChannelCmd = 								ENABLE;
   NVIC_Init( &NVIC_InitStructure );
+	
+	// Enable the DMA global Interrupt
+	NVIC_InitStructure.NVIC_IRQChannel = 										DMA1_Channel1_IRQn; 
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 	3;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 				2;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = 								ENABLE;
+	NVIC_Init( &NVIC_InitStructure );
 	
 }
 
@@ -227,29 +267,22 @@ void IT_Configuration(void)
 
 
 /**
-	* @brief		Handler for ADC interrupts
-	* @details	This hendler will be called on each conversion of ADC1.
-	*						It allows to update strength data on each conversion.
-	*/
-void ADC1_2_IRQHandler(void)
+ * @brief Interrupt handler of DCMI DMA stream
+ */
+void DMA1_Channel1_IRQHandler( void )
 {
-	// If end of conversion
-	if( ADC_GetITStatus(ADC1, ADC_IT_EOC) == SET )
+	if ( DMA_GetITStatus( DMA1_IT_TC1 ) != RESET ) // Full buffer
 	{
-		// Update signal strength for this channel
-		sProcUpdateSignalStrength(ADC_GetConversionValue(ADC1));
-		// Update signal number
-		(g_signalData.currentSignal)++;
+		DMA_ClearITPendingBit( DMA1_IT_TC1 );
+		sProcUpdateSignalStrength(adcBuffer);
 	}
-	// Else, do nothing
-	
-	// End of Interrupt
-	ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
 }
+
+
+
 
 void TIM1_UP_IRQHandler(void)
 {
-	g_signalData.currentSignal = 0;
 	(g_signalData.numberOfSamples)++;
 	TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
 }
@@ -275,24 +308,29 @@ void sampleAcquisitionInit( void )
 	GPIO_Configuration();
 	
 	/*******
+	 * DMA *
+	 *******/
+
+	DMA_Configuration();
+	
+	/*******
 	 * ADC *
 	 *******/
 	
 	ADC_Configuration();
-	
-	/********
-	 * NVIC *
-	 ********/
-	
-	IT_Configuration();
-	
+
 	/*********
 	 * TIMER *
 	 *********/
 	
 	TIMER_Configuration();
 
+	/********
+	 * NVIC *
+	 ********/
 	
+	IT_Configuration();
+
 	/*********
 	 * START *
 	 *********/

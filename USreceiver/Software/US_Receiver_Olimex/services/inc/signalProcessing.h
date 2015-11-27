@@ -30,7 +30,6 @@
 typedef struct
 {
 	uint16_t signalsStrength[NB_OF_SIGNALS]; 	// Constantly updated values
-	uint8_t currentSignal;
 	uint32_t numberOfSamples;									// Number of samples used to compute strengths so far
 }t_signalsData;
 	
@@ -44,7 +43,7 @@ typedef struct
 
 void sProcInit(void);
 
-void sProcUpdateSignalStrength(uint16_t sample);
+void sProcUpdateSignalStrength(uint16_t *adcSamplesBuffer);
 
 void sProcGetSignalsStrengthValues(uint16_t array[], uint8_t* size);
 
