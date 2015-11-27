@@ -24,7 +24,7 @@
 	*****************************************************************************/
 
 // Global variable used to compute signals strength
-static t_signalsData g_signalData;
+static t_signalsData g_signalData = {{0}, 0, 0};
 
 /******************************************************************************
 	*
@@ -48,10 +48,10 @@ void sProcResetSignalData(void)
 {
 	uint8_t i=0;
 	
-	g_signalData.currentSignal = 0;
 	g_signalData.numberOfSamples = 0;
 	for(i=0;i<NB_OF_SIGNALS;i++)
 		g_signalData.signalsStrength[i] = 0;
+	/// @warning currentSignal MUST NOT be reset, because it would lose the real order of signals
 }
 
 void sProcUpdateSignalStrength(uint16_t sample)

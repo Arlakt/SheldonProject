@@ -262,18 +262,19 @@ void sampleAcquisitionInit( void )
 	 *******/
 	
 	ADC_Configuration();
-
-	/*********
-	 * TIMER *
-	 *********/
-	
-	TIMER_Configuration();
 	
 	/********
 	 * NVIC *
 	 ********/
 	
 	IT_Configuration();
+	
+	/*********
+	 * TIMER *
+	 *********/
+	
+	TIMER_Configuration();
+
 	
 	/*********
 	 * START *
