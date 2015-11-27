@@ -7,6 +7,13 @@
 #include <termios.h>		/* POSIX terminal control definitions */
 
 
+#ifdef DEBUG
+#define debug(fmt, ...) fprintf(stderr, fmt, ##__VA_ARGS__)
+#else
+#define debug(fmt, ...)
+#endif
+
+
 void serial_config(int fd)
 {
 	struct termios options;

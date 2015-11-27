@@ -12,19 +12,20 @@ CC = arm-linux-gnueabi-gcc
 CXX = arm-linux-gnueabi-g++
 CFLAGS = -Wall -std=gnu99 -march=armv7-a
 CXXFLAGS = -Wall -march=armv7-a
+LDFLAGS = 
 else
 $(error Unknown architecture)
 endif
 endif
-EXEC = serial.elf
 
-SRCS_C = $(wildcard *.c)
-SRCS_CPP = $(wildcard *.cpp)
-OBJS = $(SRCS_C:.c=.o) $(SRCS_CPP:.cpp=.o) 
+ifdef DEBUG
+CFLAGS += -DDEBUG
+CXXFLAGS += -DDEBUG
+endif
 
-all: $(EXEC)
+all: serial.elf
 	
-$(EXEC): $(OBJS)
+serial.elf: serial.o
 	$(CXX) $(LDFLAGS) $^ -o $@
 
 %.o: %.c
@@ -37,5 +38,5 @@ $(EXEC): $(OBJS)
 
 clean:
 	rm -rf *.o
-	rm -rf $(EXEC)
+	rm -rf *.elf
 
