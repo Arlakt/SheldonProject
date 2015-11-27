@@ -11,8 +11,10 @@ PImage img;
 // Serial port stuff ///////////////////////
 import processing.serial.*;
 Serial myPort;
-int[] serialInArray = new int[8];
-int serialCount = 0;
+int startByte = 0;
+int dataByteNumber = 1;
+int signalNumber = 0;
+long[] dataBeingConstructed = new long[8];
 
 
 void setup(){
@@ -23,12 +25,6 @@ printArray(Serial.list());
   size(900,900);
   img = loadImage("drone.png");
   
-  // Start analog read
-  myPort.write('S');
-  myPort.write('S');
-  myPort.write('S');
-  myPort.write('S');
-  myPort.write('S');
 }
 
 
@@ -59,21 +55,45 @@ void draw(){
 }
 
 
+
+
 // Recieve data //
 void serialEvent(Serial myPort) {
   // read a byte from the serial port:
    int inByte = myPort.read();
   
-   // Add the latest byte from the serial port to array:
-   serialInArray[serialCount] = inByte;
-   serialCount++;
-   if (serialCount >= 8 ) {
-   for (int x=0;x<8;x++){
-      SignalStrengthCorner[x] = serialInArray[x] * maxRange / 256;
+  if(startByte == 1 && inByte != 0xFF)
+    startByte = 0;
+  else if(startByte == 0 && inByte == 0xFF)
+    startByte = 1;
+  else if(startByte == 1 && inByte == 0xFF)
+  {
+    startByte = 2;
+    dataByteNumber = 1;
+    signalNumber = 0;
+  }
+  else if(startByte == 2)
+  {
+    if(dataByteNumber == 1)
+    {
+      dataBeingConstructed[signalNumber] = 0x00 | inByte;
+      dataByteNumber = 2;
     }
+    else if(dataByteNumber == 2)
+    {
+      dataBeingConstructed[signalNumber] |= inByte << 8;
+      dataByteNumber = 1;
+      signalNumber++;
+    }
+  }
   
-   // Reset serialCount:
-   serialCount = 0;
-   }
+  if(signalNumber >= 8)
+  {
+    for (int x=0;x<8;x++){
+      SignalStrengthCorner[x] = (int)(dataBeingConstructed[x] * (long)maxRange / 65536);
+    }
+    signalNumber = 0;
+    startByte = 0;
+  }
 
 }

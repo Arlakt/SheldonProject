@@ -35,13 +35,6 @@
 #define TIM1_CCR1_Address  	((uint32_t)0x40012C34)
 
 
-#define SIGNAL_BUFFER_SIZE	2048
-#define SIGNAL_HALF_BUFFER_SIZE 		(SIGNAL_BUFFER_SIZE/2)
-
-extern uint16_t adcBuffer[SIGNAL_BUFFER_SIZE];		// Static buffer to save a signal
-extern uint16_t idDataToProcess;
-
-
 /******************************************************************************
 	*
 	*   PUBLIC FUNCTIONS

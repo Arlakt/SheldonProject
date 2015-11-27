@@ -25,7 +25,7 @@
 	*****************************************************************************/
 
 #define NB_OF_SIGNALS	8
-#define SIGNAL_THEORICAL_AVERAGE	0x400/2	// Half of the saturation value (half of 10 bits for this ADC)
+#define SIGNAL_THEORICAL_AVERAGE	0x1000/2	// Half of the saturation value (half of 12 bits for this ADC)
 
 typedef struct
 {
@@ -43,8 +43,6 @@ typedef struct
 	*****************************************************************************/
 
 void sProcInit(void);
-
-void sProcResetSignalData(void);
 
 void sProcUpdateSignalStrength(uint16_t sample);
 

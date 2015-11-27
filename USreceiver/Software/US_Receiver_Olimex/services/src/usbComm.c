@@ -30,11 +30,11 @@
 	
 /******************************************************************************
 	*
-	*   PRIVATE FUNCTIONS
+	*   GLOBAL VARIABLES
 	*
 	*****************************************************************************/
 	
-	
+extern t_signalsData g_signalData;
 
 /******************************************************************************
 	*
@@ -72,10 +72,12 @@ void usbCommInitPeriodicSending(void)
 	NVIC_InitTypeDef NVIC_InitStructure; // IT
 	
 	// Timer 2 config
+	/// 72MHz clock is entering in TIM2 because according to @see Reference manual
+	/// if APB1 prescaler is different from 1, there is a x2 on TIM2 clock (36MHz x 2 = 72MHz)
 	RCC_APB1PeriphClockCmd( RCC_APB1Periph_TIM2 , ENABLE );
   TIM_TimeBaseStructInit( &TIM_TimeBaseStructure ); 
   TIM_TimeBaseStructure.TIM_Period = 				10000;  // 10kHz / 10000 = 1Hz  
-  TIM_TimeBaseStructure.TIM_Prescaler = 		7200;   // 72MHz / 7200 = 10kHz    
+  TIM_TimeBaseStructure.TIM_Prescaler = 		7200;   // 72MHz / 7200 = 10kHz
   TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;    
   TIM_TimeBaseStructure.TIM_CounterMode = 	TIM_CounterMode_Down;  
   TIM_TimeBaseInit( TIM2, &TIM_TimeBaseStructure );
@@ -115,7 +117,7 @@ void TIM2_IRQHandler (void)
 	usbCommSendData(frame, frameSize);
 	
 	// Reset signals strength processing
-	sProcResetSignalData();
+	g_signalData.numberOfSamples = 0;
 	
 	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 }

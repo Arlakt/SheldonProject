@@ -46,10 +46,7 @@
 	*   VARIABLES
 	*
 	*****************************************************************************/
-
-uint16_t adcBuffer[SIGNAL_BUFFER_SIZE];		// Static buffer to save a signal
-uint16_t idDataToProcess = 0;
-
+extern t_signalsData g_signalData;
 
 /******************************************************************************
 	*
@@ -129,7 +126,7 @@ void ADC_Configuration(void)
 
 	// Common config
 	ADC_InitStructure.ADC_Mode = 								ADC_Mode_Independent;
-	ADC_InitStructure.ADC_ScanConvMode = 				ENABLE; // One channel only
+	ADC_InitStructure.ADC_ScanConvMode = 				ENABLE;
 	ADC_InitStructure.ADC_ContinuousConvMode = 	DISABLE; // Conversion on PWM rising edge only
 	ADC_InitStructure.ADC_ExternalTrigConv = 		ADC_ExternalTrigConv_T1_CC1; // Timer 1 CC1
 	ADC_InitStructure.ADC_DataAlign = 					ADC_DataAlign_Right;
@@ -139,21 +136,22 @@ void ADC_Configuration(void)
 	ADC_Init( ADC1, &ADC_InitStructure );
 	
 	// Channels config
-	ADC_RegularChannelConfig( ADC1, ADC_Channel_8, 1, ADC_SampleTime_1Cycles5);
-	ADC_RegularChannelConfig( ADC1, ADC_Channel_9, 2, ADC_SampleTime_1Cycles5);
-	ADC_RegularChannelConfig( ADC1, ADC_Channel_10, 3, ADC_SampleTime_1Cycles5);
-	ADC_RegularChannelConfig( ADC1, ADC_Channel_11, 4, ADC_SampleTime_1Cycles5);
-	ADC_RegularChannelConfig( ADC1, ADC_Channel_12, 5, ADC_SampleTime_1Cycles5);
-	ADC_RegularChannelConfig( ADC1, ADC_Channel_13, 6, ADC_SampleTime_1Cycles5);
-	ADC_RegularChannelConfig( ADC1, ADC_Channel_14, 7, ADC_SampleTime_1Cycles5);
-	ADC_RegularChannelConfig( ADC1, ADC_Channel_15, 8, ADC_SampleTime_1Cycles5);
+	// Refer to SignalsRouting.png for the ranks
+	ADC_RegularChannelConfig( ADC1, ADC_Channel_8, 2, ADC_SampleTime_1Cycles5);
+	ADC_RegularChannelConfig( ADC1, ADC_Channel_9, 1, ADC_SampleTime_1Cycles5);
+	ADC_RegularChannelConfig( ADC1, ADC_Channel_10, 8, ADC_SampleTime_1Cycles5);
+	ADC_RegularChannelConfig( ADC1, ADC_Channel_11, 7, ADC_SampleTime_1Cycles5);
+	ADC_RegularChannelConfig( ADC1, ADC_Channel_12, 3, ADC_SampleTime_1Cycles5);
+	ADC_RegularChannelConfig( ADC1, ADC_Channel_13, 4, ADC_SampleTime_1Cycles5);
+	ADC_RegularChannelConfig( ADC1, ADC_Channel_14, 6, ADC_SampleTime_1Cycles5);
+	ADC_RegularChannelConfig( ADC1, ADC_Channel_15, 5, ADC_SampleTime_1Cycles5);
+	
+	// Enable End Of Conversion interrupt
+  ADC_ITConfig(ADC1, ADC_IT_EOC, ENABLE);
 	
 	// Start transferts
   ADC_ExternalTrigConvCmd( ADC1, ENABLE ); // Enable ADC1 external trigger
 	ADC_Cmd( ADC1, ENABLE ); //Enable ADC1
-
-  // Enable End Of Conversion interrupt
-  ADC_ITConfig(ADC1, ADC_IT_EOC, ENABLE);
 
 	// Calibrate ADC1
 	ADC_ResetCalibration( ADC1 );
@@ -174,7 +172,7 @@ void TIMER_Configuration(void)
 	
 	// Time Base configuration
   TIM_TimeBaseStructInit( &TIM_TimeBaseStructure ); 
-  TIM_TimeBaseStructure.TIM_Period = 				360;  // 36MHz / 360 = 100kHz  
+  TIM_TimeBaseStructure.TIM_Period = 				720;  // 72MHz / 720 = 100kHz  
   TIM_TimeBaseStructure.TIM_Prescaler = 		0x0;       
   TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;    
   TIM_TimeBaseStructure.TIM_CounterMode = 	TIM_CounterMode_Down;  
@@ -186,6 +184,9 @@ void TIMER_Configuration(void)
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;                
   TIM_OCInitStructure.TIM_OCPolarity = 	TIM_OCPolarity_High;         
   TIM_OC1Init( TIM1, &TIM_OCInitStructure );
+	
+	TIM_ITConfig(TIM1, TIM_IT_Update, ENABLE);
+	TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
 	
 	// TIM1 counter enable
   TIM_Cmd( TIM1, ENABLE );
@@ -204,7 +205,14 @@ void IT_Configuration(void)
 
   // Configure and enable ADC interrupt
   NVIC_InitStructure.NVIC_IRQChannel = 										ADC1_2_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 	5;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 	3;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 				2;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = 								ENABLE;
+  NVIC_Init( &NVIC_InitStructure );
+	
+	// Configure and enable TIM1 interrupt
+  NVIC_InitStructure.NVIC_IRQChannel = 										TIM1_UP_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 	4;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 				2;
   NVIC_InitStructure.NVIC_IRQChannelCmd = 								ENABLE;
   NVIC_Init( &NVIC_InitStructure );
@@ -230,11 +238,20 @@ void ADC1_2_IRQHandler(void)
 	{
 		// Update signal strength for this channel
 		sProcUpdateSignalStrength(ADC_GetConversionValue(ADC1));
+		// Update signal number
+		(g_signalData.currentSignal)++;
 	}
 	// Else, do nothing
 	
 	// End of Interrupt
 	ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
+}
+
+void TIM1_UP_IRQHandler(void)
+{
+	g_signalData.currentSignal = 0;
+	(g_signalData.numberOfSamples)++;
+	TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
 }
 
 /**
