@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>		/* Standard input/output definitions */
 #include <string.h>		/* String function definitions */
 #include <unistd.h>		/* UNIX standard function definitions */
@@ -80,13 +81,16 @@ int main(int argc, char * argv[])
 {
 	if (argc < 2) {
 		fprintf(stderr, "Usage: %s device\n", argv[0]);
-		return 1;
+		exit(1);
 	}
 
 	int fd = serial_init(argv[1]);
-
+	if (! isatty(fd)) {
+		fprintf(stderr, "This device is not a serial port!\n");
+		exit(1);
+	}
 	if (serial_start(fd)) {
-		return 1;
+		exit(1);
 	} else {
 		printf("OK\n");
 	}
@@ -101,7 +105,7 @@ int main(int argc, char * argv[])
 		//printf("n = %d\n", n);
 		if (n < 0) {
 			perror("Read failed");
-			return 1;
+			exit(1);
 		} else if (n == 0) {
 			continue;
 		}
