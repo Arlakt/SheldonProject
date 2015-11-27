@@ -30,6 +30,9 @@ void serial_config(int fd)
 	options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);  // Set raw input (unbuffered, no echo)
 	options.c_iflag &= ~(IXON | IXOFF | IXANY);  // Disable software flow control
 	options.c_oflag &= ~OPOST;  // Set raw output
+	// Set read() to return when 1 or more characters are received
+	options.c_cc[VMIN] = 1;
+	options.c_cc[VTIME] = 0;
 	tcsetattr(fd, TCSAFLUSH, &options);
 }
 
