@@ -5,6 +5,7 @@
 #include <fcntl.h>		/* File control definitions */
 #include <errno.h>		/* Error number definitions */
 #include <termios.h>		/* POSIX terminal control definitions */
+#include <assert.h>
 
 
 #ifdef DEBUG
@@ -84,6 +85,76 @@ void printhex(char const * buf, size_t size)
 }
 
 
+int parse(char * buffer, size_t nbytes, unsigned int * data)
+{
+	char const start = 'F';
+	int discard = -1;  // buffer[0..discard] will be deleted
+	
+	enum { START1, START2, MSB0, LSB, MSB };
+	char * state_to_str[] = { "START1", "START2", "MSB0", "LSB", "MSB" };
+	int state = START1;
+	unsigned int datatmp[8];
+	unsigned int ndata = 0;
+
+	for (unsigned int i = 0; i < nbytes; i++) {
+		debug("state = %s, i = %u, char = 0x%02x, ndata = %u, discard = %d\n",
+			state_to_str[state], i, buffer[i], ndata, discard);
+		switch (state) {
+		case START1:
+			if (buffer[i] == start) {
+				state = START2;
+			} else {
+				discard = i;
+			}
+			break;
+		case START2:
+			if (buffer[i] == start) {
+				state = MSB0;
+			} else {
+				state = START1;
+				discard = i;
+			}
+			break;
+		case MSB0:
+			ndata = 0;
+			if (buffer[i] == start) {
+				// Allow any number of start
+				discard = i - 1;
+			} else {
+				datatmp[ndata] = (unsigned int)(buffer[i]) << 8;
+				state = LSB;
+			}
+			break;
+		case LSB:
+			datatmp[ndata] |= (unsigned int)(buffer[i]);
+			ndata++;
+			if (ndata == 8) {
+				memcpy(data, datatmp, sizeof(datatmp));
+				discard = i;
+				state = START1;
+			} else {
+				state = MSB;
+			}
+			break;
+		case MSB:
+			if (buffer[i] == start) {
+				discard = i;
+				state = START2;
+			} else {
+				datatmp[ndata] = (unsigned int)(buffer[i]) << 8;
+				state = LSB;
+			}
+			break;
+		default:
+			state = START1;
+			break;
+		}
+	}
+	debug("exit state = %s, ndata = %u, discard = %d\n",
+			state_to_str[state], ndata, discard);
+	return discard;
+}
+
 int main(int argc, char * argv[])
 {
 	if (argc < 2) {
@@ -103,12 +174,13 @@ int main(int argc, char * argv[])
 	}
 
 	char buffer[18];
-	char * bufptr = buffer;
+	size_t nbytes = 0;
+	unsigned int data[8];
 
 	for (;;) {
-		int nmax = sizeof(buffer) + buffer - bufptr;
-		//printf("buffer = %p, bufptr = %p, nmax = %d, ", buffer, bufptr, nmax);
-		int n = read(fd, bufptr, nmax);
+		debug("buffer = %p, nbytes = %d, read %d\n", buffer, nbytes, sizeof(buffer) - nbytes);
+		assert (nbytes <= sizeof(buffer));
+		int n = read(fd, buffer + nbytes, sizeof(buffer) - nbytes);
 		//printf("n = %d\n", n);
 		if (n < 0) {
 			perror("Read failed");
@@ -116,26 +188,12 @@ int main(int argc, char * argv[])
 		} else if (n == 0) {
 			continue;
 		}
-		bufptr += n;
-		//printf("-> "); printhex(buffer, bufptr - buffer); printf("\n");
-		if (bufptr == buffer + sizeof(buffer)) {
-			printf("Buffer: "); printhex(buffer, sizeof(buffer)); printf("\n");
-			if (*(bufptr-2) == 'F' && *(bufptr-1) == 'F') {
-				int data[8];
-				data[0] = buffer[0] | buffer[1] << 8;
-				data[1] = buffer[2] | buffer[3] << 8;
-				data[2] = buffer[4] | buffer[5] << 8;
-				data[3] = buffer[6] | buffer[7] << 8;
-				data[4] = buffer[8] | buffer[9] << 8;
-				data[5] = buffer[10] | buffer[11] << 8;
-				data[6] = buffer[12] | buffer[13] << 8;
-				data[7] = buffer[14] | buffer[15] << 8;
-				printf("-> Data: %04x %04x %04x %04x %04x %04x %04x %04x\n",
-					data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
-			} else {
-				printf("Illegal data!\n");
-			}
-			bufptr = buffer;
+		nbytes += n;
+		//printf("buffer: "); printhex(buffer, nbytes); printf("\n");
+		int discard = parse(buffer, nbytes, data);
+		if (discard >= 0) {
+			memmove(buffer, buffer + discard + 1, nbytes - discard);
+			nbytes -= discard + 1;
 		}
 	}
 
