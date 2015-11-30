@@ -47,9 +47,9 @@ void createSerialFrameForSignalsStrength(uint8_t frame[], uint16_t signalsStreng
 	
 	for(i=0;i<nbOfSignals;i++)
 	{
-		frame[*frameSize] = (uint8_t) (signalsStrength[i] & 0xFF);
-		(*frameSize)++;
 		frame[*frameSize] = (uint8_t) ((signalsStrength[i] >> 8) & 0xFF);
+		(*frameSize)++;
+		frame[*frameSize] = (uint8_t) (signalsStrength[i] & 0xFF);
 		(*frameSize)++;
 	}
 	

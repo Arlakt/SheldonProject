@@ -76,12 +76,13 @@ void serialEvent(Serial myPort) {
   {
     if(dataByteNumber == 1)
     {
-      dataBeingConstructed[signalNumber] = 0x00 | inByte;
+      dataBeingConstructed[signalNumber] = 0x00 | (inByte << 8);
       dataByteNumber = 2;
     }
     else if(dataByteNumber == 2)
     {
-      dataBeingConstructed[signalNumber] |= inByte << 8;
+      
+      dataBeingConstructed[signalNumber] |= inByte;
       dataByteNumber = 1;
       signalNumber++;
     }
