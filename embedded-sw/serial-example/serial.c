@@ -4,18 +4,13 @@
 #include <unistd.h>		/* UNIX standard function definitions */
 #include <fcntl.h>		/* File control definitions */
 #include <errno.h>		/* Error number definitions */
-#include <termios.h>		/* POSIX terminal control definitions */
-#include <assert.h>
+#include <termios.h>	/* POSIX terminal control definitions */
 
 
-#ifdef DEBUG
-#define debug(fmt, ...) fprintf(stderr, fmt, ##__VA_ARGS__)
-#else
-#define debug(fmt, ...)
-#endif
+#include "debug.h"
 
 
-void serial_config(int fd)
+static void serial_config(int fd)
 {
 	struct termios options;
 	tcgetattr(fd, &options);
@@ -86,7 +81,13 @@ int serial_start(int fd)
 }
 
 
-void printhex(char const * buf, size_t size)
+void serial_stop(int fd)
+{
+	close(fd);
+}
+
+
+static void printhex(char const * buf, size_t size)
 {
 	for (int i = 0; i < size; i++) {
 		printf("%02X ", buf[i]);
@@ -94,7 +95,7 @@ void printhex(char const * buf, size_t size)
 }
 
 
-int parse(char * buffer, size_t * nbytes, unsigned int * data)
+static int serial_parse(char * buffer, size_t * nbytes, unsigned int * data)
 {
 	char const start = '\xFF';
 	int discard = -1;  // buffer[0..discard] will be deleted
@@ -170,47 +171,25 @@ int parse(char * buffer, size_t * nbytes, unsigned int * data)
 	return updated;
 }
 
-int main(int argc, char * argv[])
+
+int serial_get_data(int fd, unsigned int * data)
 {
-	if (argc < 2) {
-		fprintf(stderr, "Usage: %s device\n", argv[0]);
-		exit(1);
-	}
+	static char buffer[18];
+	static size_t nbytes = 0;
 
-	int fd = serial_init(argv[1]);
-	if (fd == -1) {
-		exit(1);
+	debug("buffer = %p, nbytes = %d, read %d\n", buffer, nbytes, sizeof(buffer) - nbytes);
+	assert (nbytes <= sizeof(buffer));
+	int n = read(fd, buffer + nbytes, sizeof(buffer) - nbytes);
+	debug("n = %d\n", n);
+	if (n < 0) {
+		perror("Read failed");
+		return -1;
+	} else if (n == 0) {
+		return 0;
 	}
-/*
-	if (serial_start(fd)) {
-		exit(1);
-	} else {
-		printf("OK\n");
-	}
-*/
-	char buffer[18];
-	size_t nbytes = 0;
-	unsigned int data[8];
-
-	for (;;) {
-		debug("buffer = %p, nbytes = %d, read %d\n", buffer, nbytes, sizeof(buffer) - nbytes);
-		assert (nbytes <= sizeof(buffer));
-		int n = read(fd, buffer + nbytes, sizeof(buffer) - nbytes);
-		//printf("n = %d\n", n);
-		if (n < 0) {
-			perror("Read failed");
-			exit(1);
-		} else if (n == 0) {
-			continue;
-		}
-		nbytes += n;
-		//printf("-> "); printhex(buffer, nbytes); printf("\n");
-		if (parse(buffer, &nbytes, data)) {
-			printf("data = %04x %04x %04x %04x %04x %04x %04x %04x\n",
-				data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
-		}
-	}
-
-	close(fd);
-	return 0;
+	nbytes += n;
+	//printf("-> "); printhex(buffer, nbytes); printf("\n");
+	return serial_parse(buffer, &nbytes, data);
 }
+
+

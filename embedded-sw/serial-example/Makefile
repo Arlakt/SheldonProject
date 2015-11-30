@@ -23,9 +23,9 @@ CFLAGS += -DDEBUG
 CXXFLAGS += -DDEBUG
 endif
 
-all: serial.elf
+all: receiver.elf
 	
-serial.elf: serial.o
+receiver.elf: receiver.o serial.o
 	$(CXX) $(LDFLAGS) $^ -o $@
 
 %.o: %.c
