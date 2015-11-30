@@ -181,13 +181,13 @@ int main(int argc, char * argv[])
 	if (fd == -1) {
 		exit(1);
 	}
-
+/*
 	if (serial_start(fd)) {
 		exit(1);
 	} else {
 		printf("OK\n");
 	}
-
+*/
 	char buffer[18];
 	size_t nbytes = 0;
 	unsigned int data[8];
