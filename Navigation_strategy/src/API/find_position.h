@@ -1,8 +1,10 @@
-#ifndef FIND_POSITION
-#define FIND_POSITION_H
+#ifndef TRACK_POSITION
+#define TRACK_POSITION_H
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <pthread.h>
+#include <sys/time.h>
 
 typedef struct _position{
     int angle; //in degrees, modulo 360
@@ -13,4 +15,8 @@ typedef struct _position{
 //signals_power is an array containing the signal value on each receiver
 int basic_position(int * signals_power, t_position * pos);
 
-#endif // FIND_POSITION_H
+//function designed to be the main of a thread
+//put the position of the beacon in shared variable pos
+void * compute_position(void * arg);
+
+#endif // TRACK_POSITION_H
