@@ -1,4 +1,4 @@
-CC = arm-linux-gnueabi-gcc
+CC = arm-linux-gnueabi-gcc -pthread
 CFLAGS = -march=armv7-a
 CXXFLAGS = -W -Wall
 LDFLAGS =
@@ -6,10 +6,11 @@ SRCDIR= ./src
 TESTDIR= ./src/test_movement
 BUILDDIR= ./build
 MOVEDIR= $(SRCDIR)/movement
+POSIDIR= $(SRCDIR)/position
 EXEC = clean sheldon_run.elf
 
-SRCS = $(MOVEDIR)/at_commands_builder.c $(MOVEDIR)/flight_functions.c $(MOVEDIR)/UDP_sender.c $(TESTDIR)/test.c
-OBJS = $(BUILDDIR)/at_commands_builder.o $(BUILDDIR)/flight_functions.o $(BUILDDIR)/UDP_sender.o $(BUILDDIR)/test.o
+SRCS = $(MOVEDIR)/at_commands_builder.c $(MOVEDIR)/flight_functions.c $(MOVEDIR)/UDP_sender.c $(POSIDIR)/find_position.c $(POSIDIR)/track_position.c $(TESTDIR)/test.c
+OBJS = $(BUILDDIR)/at_commands_builder.o $(BUILDDIR)/flight_functions.o $(BUILDDIR)/UDP_sender.o $(BUILDDIR)/find_position.o $(BUILDDIR)/track_position.o $(BUILDDIR)/test.o
 
 all : $(EXEC)
 	
@@ -24,6 +25,12 @@ $(BUILDDIR)/flight_functions.o: $(MOVEDIR)/flight_functions.c
 
 $(BUILDDIR)/UDP_sender.o: $(MOVEDIR)/UDP_sender.c
 	$(CC) -o $(BUILDDIR)/UDP_sender.o -c $(MOVEDIR)/UDP_sender.c $(CXXFLAGS)
+
+$(BUILDDIR)/find_position.o: $(POSIDIR)/find_position.c
+	$(CC) -o $(BUILDDIR)/find_position.o -c $(POSIDIR)/find_position.c $(CXXFLAGS)
+
+$(BUILDDIR)/track_position.o: $(POSIDIR)/track_position.c
+	$(CC) -o $(BUILDDIR)/track_position.o -c $(POSIDIR)/track_position.c $(CXXFLAGS)
 
 $(BUILDDIR)/test.o: $(TESTDIR)/test.c
 	$(CC) -o $(BUILDDIR)/test.o -c $(TESTDIR)/test.c $(CXXFLAGS)
