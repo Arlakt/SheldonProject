@@ -18,13 +18,11 @@ int find_maximum(int * signals_power)
     return max;
 }
 
-t_position basic_position(int * signals_power)
+int basic_position(int * signals_power, t_position * pos)
 {
-    t_position pos;
-
     int angle_max = find_maximum(signals_power);
-    pos.angle = receiver_position[angle_max];
-    pos.distance = signals_power[angle_max];
+    (*pos).angle = receiver_position[angle_max];
+    (*pos).distance = signals_power[angle_max];
 
-    return pos;
+    return 0;
 }
