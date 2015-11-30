@@ -11,6 +11,6 @@ typedef struct _position{
 
 //finds the receiver with the maximum value
 //signals_power is an array containing the signal value on each receiver
-t_position basic_position(int * signals_power);
+int basic_position(int * signals_power, t_position * pos);
 
 #endif // FIND_POSITION_H
