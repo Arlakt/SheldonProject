@@ -88,9 +88,9 @@ void printhex(char const * buf, size_t size)
 }
 
 
-int parse(char * buffer, size_t nbytes, unsigned int * data)
+int parse(char * buffer, size_t * nbytes, unsigned int * data)
 {
-	char const start = 'F';
+	char const start = '\xFF';
 	int discard = -1;  // buffer[0..discard] will be deleted
 	
 	enum { START1, START2, MSB0, LSB, MSB };
@@ -98,8 +98,9 @@ int parse(char * buffer, size_t nbytes, unsigned int * data)
 	int state = START1;
 	unsigned int datatmp[8];
 	unsigned int ndata = 0;
+	int updated = 0;
 
-	for (unsigned int i = 0; i < nbytes; i++) {
+	for (unsigned int i = 0; i < *nbytes; i++) {
 		debug("state = %s, i = %u, char = 0x%02x, ndata = %u, discard = %d\n",
 			state_to_str[state], i, buffer[i], ndata, discard);
 		switch (state) {
@@ -133,6 +134,7 @@ int parse(char * buffer, size_t nbytes, unsigned int * data)
 			ndata++;
 			if (ndata == 8) {
 				memcpy(data, datatmp, sizeof(datatmp));
+				updated = 1;
 				discard = i;
 				state = START1;
 			} else {
@@ -141,7 +143,7 @@ int parse(char * buffer, size_t nbytes, unsigned int * data)
 			break;
 		case MSB:
 			if (buffer[i] == start) {
-				discard = i;
+				discard = i - 1;
 				state = START2;
 			} else {
 				datatmp[ndata] = (unsigned int)(buffer[i]) << 8;
@@ -155,7 +157,11 @@ int parse(char * buffer, size_t nbytes, unsigned int * data)
 	}
 	debug("exit state = %s, ndata = %u, discard = %d\n",
 			state_to_str[state], ndata, discard);
-	return discard;
+	if (discard >= 0) {
+		memmove(buffer, buffer + discard + 1, *nbytes - discard);
+		*nbytes -= discard + 1;
+	}
+	return updated;
 }
 
 int main(int argc, char * argv[])
@@ -170,6 +176,7 @@ int main(int argc, char * argv[])
 		fprintf(stderr, "This device is not a serial port!\n");
 		exit(1);
 	}
+
 	if (serial_start(fd)) {
 		exit(1);
 	} else {
@@ -192,11 +199,10 @@ int main(int argc, char * argv[])
 			continue;
 		}
 		nbytes += n;
-		//printf("buffer: "); printhex(buffer, nbytes); printf("\n");
-		int discard = parse(buffer, nbytes, data);
-		if (discard >= 0) {
-			memmove(buffer, buffer + discard + 1, nbytes - discard);
-			nbytes -= discard + 1;
+		//printf("-> "); printhex(buffer, nbytes); printf("\n");
+		if (parse(buffer, &nbytes, data)) {
+			printf("data = %04x %04x %04x %04x %04x %04x %04x %04x\n",
+				data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
 		}
 	}
 
