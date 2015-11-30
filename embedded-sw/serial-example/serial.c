@@ -45,6 +45,12 @@ int serial_init(char * device)
 		return -1;
 	}
 
+	if (! isatty(fd)) {
+		fprintf(stderr, "This device is not a serial port!\n");
+		close(fd);
+		return -1;
+	}
+
 	// Set blocking read
 	/* On the drone, the read is non-blocking anyway, normally we would
 	 * use FNDELAY instead of 0 for that */
@@ -172,8 +178,7 @@ int main(int argc, char * argv[])
 	}
 
 	int fd = serial_init(argv[1]);
-	if (! isatty(fd)) {
-		fprintf(stderr, "This device is not a serial port!\n");
+	if (fd == -1) {
 		exit(1);
 	}
 
