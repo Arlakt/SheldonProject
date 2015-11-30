@@ -1,7 +1,6 @@
-#include "./../API_movement/UDP_sender.h"
+#include "./../API/UDP_sender.h"
 
 static struct sockaddr_in serv_addr;
-int sockfd, slen;
 
 //Initialise a socket
 int init_socket(){
