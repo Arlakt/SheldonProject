@@ -2,83 +2,11 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <sys/time.h>
-#include "./../API/find_position.h"
+#include "./../API/track_position.h"
 
-//shared variable
-static t_position pos = {10,10};
-
-//declaration and initialization of the different mutex
-static pthread_mutex_t compute_pos_mux = PTHREAD_MUTEX_INITIALIZER;
-static pthread_mutex_t print_pos_mux   = PTHREAD_MUTEX_INITIALIZER;
-
-void * compute_position(void * arg){
-    int i = 0;
-    while(i < 10){
-        //locks its own mutex
-        pthread_mutex_lock(&compute_pos_mux);
-
-	int * signals_power = (int *) arg;
-        basic_position(signals_power, &pos);
-	printf("**************************\nCompute\n**************************\n");
-
-	//release the mutex for printing
-        pthread_mutex_unlock(&print_pos_mux);
-	i++;
-    }
-    pthread_exit(NULL);
-}
-
-void * print_position(void * arg){
-
-    (void) arg;
-    int i = 0;
-    while(i < 10){
-
-        //locks its own mutex
-        pthread_mutex_lock(&print_pos_mux);
-
-	printf("Print Angle : %d \n Distance : %d \n", pos.angle, pos.distance);
-        
-        //release the calculating mutex
-        pthread_mutex_unlock(&compute_pos_mux);
-
-	i++;
-    }
-    pthread_exit(NULL);
-}
-
-void * track_position(void * arg){
-
-    struct timeval old_tv = {0};
-    struct timeval tv = {0};
-    long int elapsed_time = 0; // in microsecondss
-
-    gettimeofday(&old_tv, NULL); 
-
-    (void) arg;
-    int i = 0;
-    while(i < 10){
-        while (elapsed_time < 40000)
-	{
-	    gettimeofday(&tv, NULL);
-	    elapsed_time = (tv.tv_sec-old_tv.tv_sec)*1000000 + (tv.tv_usec-old_tv.tv_usec);
-	}
-
-        //locks its own mutex
-        pthread_mutex_lock(&print_pos_mux);
-	//send the move command
-	printf("Move toward : Angle : %d \n Distance : %d \nElapsed time : %ld\n", pos.angle, pos.distance, elapsed_time);
-        printf("sec: %ld usec : %ld\n", tv.tv_sec, tv.tv_usec);
-        //release the calculating mutex
-        pthread_mutex_unlock(&compute_pos_mux);
-
-        gettimeofday(&old_tv, NULL);
-	elapsed_time=0;
-
-	i++;
-    }
-    pthread_exit(NULL);
-}
+    //declaration and initialization of the different mutex
+    pthread_mutex_t compute_pos_mux = PTHREAD_MUTEX_INITIALIZER;
+    pthread_mutex_t track_pos_mux   = PTHREAD_MUTEX_INITIALIZER;
 
 int main ()
 {
@@ -89,7 +17,7 @@ int main ()
     pthread_t thread_print_position;
 
     //immediate lock of the mutex printing the position so first we calculate it at start
-    pthread_mutex_lock(&print_pos_mux);
+    pthread_mutex_lock(&track_pos_mux);
 
     //creation of the thread calculating the position of the beacon
     if(pthread_create(&thread_position, NULL, compute_position, signal) == -1) {
@@ -114,7 +42,7 @@ int main ()
     
     //destroy the mutex before closing the main
     pthread_mutex_destroy(&compute_pos_mux);
-    pthread_mutex_destroy(&print_pos_mux);
+    pthread_mutex_destroy(&track_pos_mux);
 
     return 0;
 }
