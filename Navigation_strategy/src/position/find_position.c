@@ -1,18 +1,9 @@
 #include "./../API/track_position.h"
 
-#define SIZE_ARRAY 8
-
 //position of each receiver embedded on the drone
 //angle with the back-to-front axis
 //front : 0 ; back : 180 ; right : 90 ; left : 270
-int receiver_position[SIZE_ARRAY] = {0, 45, 90, 135, 180, 225, 270, 315};
-
-//shared variable of position of the beacon
-t_position pos = {10,100};
-
-//mutex arbitrating computing and tracking
-extern pthread_mutex_t compute_pos_mux;
-extern pthread_mutex_t track_pos_mux;
+static int receiver_position[SIZE_ARRAY] = {0, 45, 90, 135, 180, 225, 270, 315};
 
 //finds the receiver receiving the maximum signal
 int find_maximum(int * signals_power)

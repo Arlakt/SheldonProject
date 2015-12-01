@@ -1,12 +1,5 @@
 #include "./../API/track_position.h"
 
-//shared variable of position of the beacon
-extern t_position pos;
-
-//mutex arbitrating computing and tracking
-extern pthread_mutex_t compute_pos_mux;
-extern pthread_mutex_t track_pos_mux;
-
 //used to prototype track_position
 //prints the position of the beacon anytime the thread is active
 void * print_position(void * arg){
