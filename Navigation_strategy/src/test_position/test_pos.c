@@ -8,6 +8,9 @@
     pthread_mutex_t compute_pos_mux = PTHREAD_MUTEX_INITIALIZER;
     pthread_mutex_t track_pos_mux   = PTHREAD_MUTEX_INITIALIZER;
 
+    //shared variable of position of the beacon
+    t_position pos = {10,100};
+
 int main ()
 {
     int signal [8] = {128, 255, 98, 3, 5, 0, -5, -2};
