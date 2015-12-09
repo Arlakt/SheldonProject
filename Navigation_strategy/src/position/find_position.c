@@ -17,16 +17,59 @@ int find_maximum(int * signals_power)
     return max;
 }
 
+//val is within [0;7]
+//returns 7 if val =0 ; val-1 if not
+int retrieve_left(int val){
+    int ret_val;
+    if(val==0)
+	ret_val = 7;
+    else
+	ret_val = val-1;
+    
+    return ret_val;
+}
+
+//val is within [0;7]
+//returns 0 if val =7 ; val+1 if not
+int retrieve_right(int val){
+    int ret_val;
+    if(val==7)
+	ret_val = 0;
+    else
+	ret_val = val+1;
+    
+    return ret_val;
+}
+
 //finds the receiver with the maximum value
 //signals_power is an array containing the signal value on each receiver
 int basic_position(int * signals_power, t_position * pos_aux)
 {
-    int angle_max = find_maximum(signals_power);
+    int rcv_max = find_maximum(signals_power);
+    (*pos_aux).angle = receiver_position[rcv_max];
+    (*pos_aux).distance = signals_power[rcv_max];
+
+    return 0;
+}
+/*
+//compute the exact angle
+//signals_power is an array containing the signal value on each receiver
+int exact_position(int * signals_power, t_position * pos_aux)
+{
+    int rcv_max = find_maximum(signals_power);
+    int right_rcv = retrieve_right(rcv_max);
+    int left_rcv = retrieve_left(rcv_max);
+
+    //sum of values of : max receiver signal power + left receiver of the max + right of the max
+    int total_power = signals_power[rcv_max]+signals_power[right_rcv]+signals_power[left_rcv];
+
+    int angle_delta;
+
     (*pos_aux).angle = receiver_position[angle_max];
     (*pos_aux).distance = signals_power[angle_max];
 
     return 0;
-}
+}*/
 
 //function designed to be the main of a thread
 //put the position of the beacon in shared variable pos

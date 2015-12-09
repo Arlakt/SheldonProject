@@ -44,7 +44,7 @@ void * track_position(void * arg){
         pthread_mutex_lock(&track_pos_mux);
 	//send the move command
 	printf("Move toward : Angle : %d \nDistance : %d \nElapsed time : %ld\n", pos.angle, pos.distance, elapsed_time);
-       // printf("sec: %ld usec : %ld\n", tv.tv_sec, tv.tv_usec);
+
         //release the calculating mutex
         pthread_mutex_unlock(&compute_pos_mux);
 
