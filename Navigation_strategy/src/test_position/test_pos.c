@@ -17,7 +17,7 @@ int main ()
 
     //declaration of the different threads
     pthread_t thread_position;
-    pthread_t thread_print_position;
+    pthread_t thread_track_position;
 
     //immediate lock of the mutex printing the position so first we calculate it at start
     pthread_mutex_lock(&track_pos_mux);
@@ -28,20 +28,19 @@ int main ()
     }
 
     //creation of the thread tracking the position of the beacon
-    if(pthread_create(&thread_print_position, NULL, track_position, NULL) == -1) {
+    if(pthread_create(&thread_track_position, NULL, track_position, NULL) == -1) {
 	printf("pthread_create position fail");
     }
     
     //********************************************************************
     //********************************************************************
-
     //simulation of the drone getting in line with a beacon
     //********************************************************************
     //********************************************************************
 
     //waiting for the threads to finish before closing the main
     pthread_join(thread_position, NULL);
-    pthread_join(thread_print_position, NULL);
+    pthread_join(thread_track_position, NULL);
     
     //destroy the mutex before closing the main
     pthread_mutex_destroy(&compute_pos_mux);
