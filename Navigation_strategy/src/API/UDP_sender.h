@@ -20,7 +20,10 @@
 int sockfd, slen;
 
 int init_socket();
-int send_message(char *message);
+//Send a message
+//if wait != 0, wait after sending the message
+//if wait = 0, don't wait
+int send_message(char *message, int wait);
 
 #endif
 
