@@ -29,15 +29,19 @@ int init_socket(){
 //close(sockfd);
 
 //Send a message
-int send_message(char *message)
+//if wait != 0, wait after sending the message
+//if wait = 0, don't wait
+int send_message(char *message, int wait)
 {
     int val_out = 0;
+
     if (sendto(sockfd, message, BUFLEN, 0, (struct sockaddr*)&serv_addr, slen) == -1)
     {
         fprintf(stderr, "[%s:%d] Error: sendto() failed\n", __FILE__, __LINE__);
         val_out=1;
     }
-    usleep(DELAI_MICROSECONDES);
+    else if (wait)
+	usleep(DELAI_MICROSECONDES);
 
     return val_out;
 }
