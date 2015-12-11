@@ -76,7 +76,7 @@ void usbCommInitPeriodicSending(void)
 	/// if APB1 prescaler is different from 1, there is a x2 on TIM2 clock (36MHz x 2 = 72MHz)
 	RCC_APB1PeriphClockCmd( RCC_APB1Periph_TIM2 , ENABLE );
   TIM_TimeBaseStructInit( &TIM_TimeBaseStructure ); 
-  TIM_TimeBaseStructure.TIM_Period = 				5000;  // 10kHz / 5000 = 2Hz  
+  TIM_TimeBaseStructure.TIM_Period = 				2000;  // 10kHz / 2000 = 5Hz  
   TIM_TimeBaseStructure.TIM_Prescaler = 		7200;   // 72MHz / 7200 = 10kHz
   TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;    
   TIM_TimeBaseStructure.TIM_CounterMode = 	TIM_CounterMode_Down;  

@@ -26,6 +26,10 @@
 
 #define NB_OF_SIGNALS	8
 #define SIGNAL_THEORICAL_AVERAGE	0x1000/2	// Half of the saturation value (half of 12 bits for this ADC)
+#define EMITTER_SIGNAL_DIVISION	4	// Division to make emitter pulse width. 
+																	// Example : 	duty cycle of 25% ==> EMITTER_SIGNAL_DIVISION = 4
+																	//						duty cycle of 50% ==> EMITTER_SIGNAL_DIVISION = 2
+
 
 typedef struct
 {

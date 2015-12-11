@@ -87,7 +87,12 @@ void sProcGetSignalsStrengthValues(uint16_t array[], uint8_t* size)
 	uint8_t i=0;
 	
 	for(i=0;i<NB_OF_SIGNALS;i++)
-		array[i] = g_signalData.signalsStrength[i];
+	{
+		// Adjust value between 0 and 0xFFFF in function of the duty cycle of the emitter
+		if( g_signalData.signalsStrength[i] > 0xFFFF/EMITTER_SIGNAL_DIVISION )
+			g_signalData.signalsStrength[i] = 0xFFFF/EMITTER_SIGNAL_DIVISION;
+		array[i] = g_signalData.signalsStrength[i] * EMITTER_SIGNAL_DIVISION;
+	}
 	
 	*size = NB_OF_SIGNALS;
 }
