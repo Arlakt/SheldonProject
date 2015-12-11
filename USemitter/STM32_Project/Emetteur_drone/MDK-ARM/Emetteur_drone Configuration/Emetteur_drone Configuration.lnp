@@ -1,0 +1,22 @@
+--cpu Cortex-M3
+"emetteur_drone configuration\stm32f1xx_hal_pwr.o"
+"emetteur_drone configuration\stm32f1xx_hal_gpio.o"
+"emetteur_drone configuration\stm32f1xx_hal_flash.o"
+"emetteur_drone configuration\stm32f1xx_hal_rcc.o"
+"emetteur_drone configuration\stm32f1xx_hal_rcc_ex.o"
+"emetteur_drone configuration\stm32f1xx_hal_tim.o"
+"emetteur_drone configuration\stm32f1xx_hal_dma.o"
+"emetteur_drone configuration\stm32f1xx_hal_flash_ex.o"
+"emetteur_drone configuration\stm32f1xx_hal_tim_ex.o"
+"emetteur_drone configuration\stm32f1xx_hal.o"
+"emetteur_drone configuration\stm32f1xx_hal_cortex.o"
+"emetteur_drone configuration\stm32f1xx_hal_gpio_ex.o"
+"emetteur_drone configuration\system_stm32f1xx.o"
+"emetteur_drone configuration\startup_stm32f103xb.o"
+"emetteur_drone configuration\main.o"
+"emetteur_drone configuration\stm32f1xx_it.o"
+"emetteur_drone configuration\stm32f1xx_hal_msp.o"
+--library_type=microlib --strict --scatter "Emetteur_drone Configuration\Emetteur_drone Configuration.sct"
+--diag_suppress=L6329 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "Emetteur_drone Configuration.map" -o "Emetteur_drone Configuration\Emetteur_drone Configuration.axf"
