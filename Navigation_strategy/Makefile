@@ -1,6 +1,6 @@
 CC = arm-linux-gnueabi-gcc -pthread
-CFLAGS = -march=armv7-a
-CXXFLAGS = -W -Wall
+CFLAGS = -W -Wall -march=armv7-a -std=c99
+CXXFLAGS = -W -Wall -march=armv7-a -std=c99
 LDFLAGS =
 SRCDIR= ./src
 TESTPOSDIR= ./src/test_position
