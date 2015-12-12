@@ -1,13 +1,20 @@
 #ifndef SENDER_H
 #define SENDER_H
 
+#ifndef BASIC
+#define BASIC
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
+#endif
+
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
+#include <strings.h>
+
 #include <unistd.h>
+
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 // ADRESSE IP AR.DRONE
 #define ADRESSEIP "127.0.0.1"

@@ -1,8 +1,11 @@
 #ifndef AT_COMMANDS_H
 #define AT_COMMANDS_H
 
+#ifndef BASIC
+#define BASIC
 #include <stdlib.h>
 #include <stdio.h>
+#endif
 
 typedef enum
 {

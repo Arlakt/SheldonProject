@@ -1,11 +1,20 @@
 #ifndef TRACK_POSITION
 #define TRACK_POSITION_H
 
+#ifndef BASIC
+#define BASIC
 #include <stdlib.h>
 #include <stdio.h>
+#endif
+
+#ifndef PTHREAD_N_TIME
+#define PTHREAD_N_TIME
 #include <pthread.h>
 #include <sys/time.h>
+#endif
+
 #include "find_position.h"
+#include "flight_functions.h"
 
 //shared variable of position of the beacon
 extern t_position pos;

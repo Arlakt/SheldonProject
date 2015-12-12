@@ -1,7 +1,12 @@
 #ifndef __MESAGE_DRONE_H
 #define __MESAGE_DRONE_H
 
+#ifndef BASIC
+#define BASIC
+#include <stdlib.h>
 #include <stdio.h>
+#endif
+
 #include "at_commands_builder.h"
 #include "UDP_sender.h"
 
