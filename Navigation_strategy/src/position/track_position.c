@@ -47,7 +47,7 @@ void * track_position(void * arg){
     }
     else //complex_move(...;float roll_power, float pitch_power, float vertical_power, float yaw_power)
     {
-		sleep(1);
+		/*sleep(1);
         printf("demarrage\n");
 		set_trim(message, n++, wait);
 		
@@ -56,7 +56,7 @@ void * track_position(void * arg){
 			take_off(message, n++, wait);
 			tps++;
 		}
-		
+		*/
 		//stop waiting 40 us after a command send
 		wait = 0;
 		
@@ -72,8 +72,13 @@ void * track_position(void * arg){
 			
 			//send the move command
 			printf("Move toward : Angle : %d \nDistance : %d \nElapsed time : %ld\n", pos.angle, pos.distance, elapsed_time);
-			reset_com(message, wait);
-			
+			/*if(pos.angle == 0)
+				set_simple_move(message, n++, CLKWISE, 0, wait);
+      	 	 else if (pos.angle > 0)
+				set_simple_move(message, n++, CLKWISE, 0.4, wait);
+			else
+				set_simple_move(message, n++, ANTI_CLKWISE, 0.4,wait);
+			*/
 			//release the calculating mutex
 			pthread_mutex_unlock(&compute_pos_mux);
 
