@@ -1,7 +1,15 @@
+#ifndef BASIC
+#define BASIC
+#include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
-#include "./../API/flight_functions.h"
+#endif
+
+#ifndef PTHREAD_N_TIME
+#define PTHREAD
 #include <pthread.h>
+#endif
+
+#include "./../API/flight_functions.h"
 
 extern int sockfd;
 
@@ -32,8 +40,8 @@ int main ()
 			tps++;
 		}
 		tps = 0;
-		while(tps < 133)
-		//while(1)
+		//while(tps < 133)
+		while(1)
 		{
 			reset_com(message, wait);
 	 		tps++;
