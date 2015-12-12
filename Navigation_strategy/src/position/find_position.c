@@ -1,45 +1,58 @@
 #include "./../API/track_position.h"
+#include "./../../../embedded-sw/serial.h"
 
 //position of each receiver embedded on the drone
 //angle with the back-to-front axis
 //front : 0 ; back : 180 ; right : 90 ; left : 270
-static int receiver_position[SIZE_ARRAY] = {0, 45, 90, 135, 180, 225, 270, 315};
+static int receiver_position[SIZE_ARRAY] = {-90, -45, 0, 45, 90, 135, 180, -135};
 
 //finds the receiver receiving the maximum signal
-int find_maximum(unsigned int * signals_power)
+//returns 1 if there is actually a result greater than the minimum threshold
+int find_maximum(unsigned int * signals_power, int* max)
 {
-    int max = 0;
-    for(int i=1; i<SIZE_ARRAY; i++)
+    int result = 0; //error = 0
+    unsigned int maxValue = MIN_STRENGTH_TO_DETECT;
+    int i=0;
+    
+    for(i=0; i<SIZE_ARRAY; i++)
     {
-	if (signals_power[i] > signals_power[max])
-	    max = i;
+		if (signals_power[i] > maxValue)
+		{
+	    	*max = i;
+	    	maxValue = signals_power[i];
+	    	result = 1;
+    	}
     }
-    return max;
+    return result;
 }
 
 //finds the receiver with the maximum value
 //signals_power is an array containing the signal value on each receiver
 int basic_position(unsigned int * signals_power, t_position * pos_aux)
 {
-    int rcv_max = find_maximum(signals_power);
-    (*pos_aux).angle = receiver_position[rcv_max];
-    (*pos_aux).distance = signals_power[rcv_max];
-
+    int rcv_max = 0;
+    int result = 0;
+    
+    result = find_maximum(signals_power, &rcv_max);
+    
+    if(result)
+    {
+    	(*pos_aux).angle = receiver_position[rcv_max];
+    	(*pos_aux).distance = signals_power[rcv_max];
+	}
+	else
+	{
+		(*pos_aux).angle = 0;
+    	(*pos_aux).distance = 0; // WARNING TO BE CHANGED
+	}
     return 0;
 }
-/*
+
 //compute the exact angle
 //signals_power is an array containing the signal value on each receiver
+/*
 int exact_position(int * signals_power, t_position * pos_aux)
 {
-    int rcv_max = find_maximum(signals_power);
-    int right_rcv = retrieve_right(rcv_max);
-    int left_rcv = retrieve_left(rcv_max);
-    //sum of values of : max receiver signal power + left receiver of the max + right of the max
-    int total_power = signals_power[rcv_max]+signals_power[right_rcv]+signals_power[left_rcv];
-    int angle_delta;
-    (*pos_aux).angle = receiver_position[angle_max];
-    (*pos_aux).distance = signals_power[angle_max];
     return 0;
 }*/
 
@@ -47,18 +60,36 @@ int exact_position(int * signals_power, t_position * pos_aux)
 //put the position of the beacon in shared variable pos
 void * compute_position(void * arg){
     int i = 0;
+    unsigned int signals_power [8] = {0, 0, 0, 0, 0, 0, 0, 0};
+   
+    //init to read serial port
+    int fd = serial_init("/dev/ttyACM0");
+	if (fd == -1)
+		exit(1);
+	
     //while(i < 10){
     while(1){
         //locks its own mutex
         pthread_mutex_lock(&compute_pos_mux);
+        
+        //***************************************
+        // either A or B
+        //***************************************
+        
+        //A - signal provenant de la board
+        
+        serial_get_data(fd, signals_power);
+        
+        //***************************************
+        //B - mock signal generated in test_pos.c
+		//signals_power = (unsigned int *) arg;
 
-	unsigned int * signals_power = (unsigned int *) arg;
         basic_position(signals_power, &pos);
-	printf("**************************\nCompute\n**************************\n");
-
-	//release the mutex for printing
+                
+        //
+		//release the mutex for printing
         pthread_mutex_unlock(&track_pos_mux);
-	i++;
+		i++;
     }
     pthread_exit(NULL);
 }
