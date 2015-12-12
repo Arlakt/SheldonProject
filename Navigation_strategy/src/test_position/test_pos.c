@@ -1,7 +1,15 @@
+#ifndef BASIC
+#define BASIC
+#include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
+#endif
+
+#ifndef PTHREAD_N_TIME
+#define PTHREAD_N_TIME
 #include <pthread.h>
 #include <sys/time.h>
+#endif
+
 #include "./../API/track_position.h"
 
     //declaration and initialization of the different mutex
@@ -11,9 +19,10 @@
     //shared variable of position of the beacon
     t_position pos = {10,100};
 
+		
 int main ()
 {
-    int signal [8] = {128, 255, 98, 3, 5, 0, -5, -2};
+	unsigned int signal [8] = {128, 255, 98, 3, 5, 0, 1, 0};
 
     //declaration of the different threads
     pthread_t thread_position;
@@ -27,10 +36,17 @@ int main ()
 	printf("pthread_create position fail");
     }
 
-    //creation of the thread tracking the position of the beacon
-    if(pthread_create(&thread_track_position, NULL, track_position, NULL) == -1) {
-	printf("pthread_create position fail");
+	//init socket sending messages
+	if (init_socket() != 0)
+    {
+        printf("[FAILED] Socket initialization failed\n");
     }
+    else //creation of the thread tracking the position of the beacon
+    {
+		if(pthread_create(&thread_track_position, NULL, track_position, NULL) == -1) {
+		printf("pthread_create position fail");
+		}
+	}
     
     //********************************************************************
     //********************************************************************
