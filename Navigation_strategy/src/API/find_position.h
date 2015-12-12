@@ -14,7 +14,7 @@
 #endif
 
 #define SIZE_ARRAY 8
-#define MIN_STRENGTH_TO_DETECT	50	// Minimum strength to affirm that a signal is received
+#define MIN_STRENGTH_TO_DETECT	100	// Minimum strength to affirm that a signal is received
 
 typedef struct _position{
     int angle; //in degrees, modulo 360
