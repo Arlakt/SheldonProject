@@ -25,33 +25,63 @@ void * print_position(void * arg){
 //send the movement orders of the drone in order to follow the beacon
 void * track_position(void * arg){
 
+	// check time interval
     struct timeval old_tv = {0};
     struct timeval tv = {0};
     long int elapsed_time = 0; // in microsecondss
+    
+    // moves
+    char message [512];
+	int n = 1;
+	int tps = 1;
+	int wait =1;
 
     gettimeofday(&old_tv, NULL); 
 
     (void) arg;
     int i = 0;
-    while(i < 10){
-        while (elapsed_time < 40000)
-	{
-	    gettimeofday(&tv, NULL);
-	    elapsed_time = (tv.tv_sec-old_tv.tv_sec)*1000000 + (tv.tv_usec-old_tv.tv_usec);
-	}
 
-        //locks its own mutex
-        pthread_mutex_lock(&track_pos_mux);
-	//send the move command
-	printf("Move toward : Angle : %d \nDistance : %d \nElapsed time : %ld\n", pos.angle, pos.distance, elapsed_time);
-
-        //release the calculating mutex
-        pthread_mutex_unlock(&compute_pos_mux);
-
-        gettimeofday(&old_tv, NULL);
-	elapsed_time=0;
-
-	i++;
+	if (init_socket() != 0)
+    {
+        printf("[FAILED] Socket initialization failed\n");
     }
-    pthread_exit(NULL);
+    else //complex_move(...;float roll_power, float pitch_power, float vertical_power, float yaw_power)
+    {
+		sleep(1);
+        printf("demarrage\n");
+		set_trim(message, n++, wait);
+		
+		while(tps < 167)
+		{
+			take_off(message, n++, wait);
+			tps++;
+		}
+		
+		//stop waiting 40 us after a command send
+		wait = 0;
+		
+		while(1){
+		    while (elapsed_time < 35000)
+			{
+				gettimeofday(&tv, NULL);
+				elapsed_time = (tv.tv_sec-old_tv.tv_sec)*1000000 + (tv.tv_usec-old_tv.tv_usec);
+			}
+
+			//locks its own mutex
+			pthread_mutex_lock(&track_pos_mux);
+			
+			//send the move command
+			printf("Move toward : Angle : %d \nDistance : %d \nElapsed time : %ld\n", pos.angle, pos.distance, elapsed_time);
+			reset_com(message, wait);
+			
+			//release the calculating mutex
+			pthread_mutex_unlock(&compute_pos_mux);
+
+			gettimeofday(&old_tv, NULL);
+			elapsed_time=0;
+
+			i++;
+		}
+	}
+	pthread_exit(NULL);
 }
