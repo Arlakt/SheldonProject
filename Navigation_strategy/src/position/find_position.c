@@ -26,14 +26,72 @@ int find_maximum(unsigned int * signals_power, int* max)
     return result;
 }
 
+/*
+ * @brief	Compute source position from the array of signals strengths
+ * @param	array 	pointer to the array of strengths
+ * @param	angle 	the computed angle between -180° and +180°
+ * @param	distance The computed distance in cm
+ * @preturn	1 if an emitter has actually been detected, 
+  *			0 else
+ */
+int find_pos(unsigned int* array, int* angle, int* distance)
+{
+	int result = 0;
+	int maxIndex, indexLeft, indexRight;
+	unsigned long strengthSum = 0;
+
+	result = find_maximum(array, &maxIndex);
+
+	if(result)
+	{
+		// Compute mean angle with three receivers (the max and both aside)
+		//---------------------------------------------------------------------
+
+		// Compute sum of all strengths
+		indexLeft = (maxIndex-1 >= 0) ? maxIndex-1 : SIZE_ARRAY-1;
+		indexRight = (maxIndex+1 < SIZE_ARRAY) ? maxIndex+1 : 0;
+		strengthSum = array[maxIndex];
+		strengthSum +=  array[indexRight];
+		strengthSum += array[indexLeft];
+
+		// Compute angle thanks to a weighted average (sum of weights is equal to 1)
+		*angle = (((float)array[maxIndex])/strengthSum) * receiver_position[maxIndex];
+		*angle += (((float)array[indexRight])/strengthSum) * receiver_position[indexRight];
+		*angle += (((float)array[indexLeft])/strengthSum) * receiver_position[indexLeft];
+
+		// Compute distance
+		//--------------------------------------------
+		///@todo to improve
+		*distance = (float)((float)(MAX_STRENGTH_DISTANCE - MIN_STRENGTH_DISTANCE)/(MAX_STRENGTH - MIN_STRENGTH)) * array[maxIndex];
+	}
+	return result;
+}
+
 //finds the receiver with the maximum value
 //signals_power is an array containing the signal value on each receiver
 int basic_position(unsigned int * signals_power, t_position * pos_aux)
 {
+	int angle = 0;
+	int distance = 0;
+    int result = 0;
+    
+    result = find_pos(signals_power, &angle, &distance);
+    
+    if(result)
+    {
+    	(*pos_aux).angle = angle;
+    	(*pos_aux).distance = distance;
+	}
+	else
+	{
+		(*pos_aux).angle = 0;
+    	(*pos_aux).distance = 0; // WARNING TO BE CHANGED
+	}
+	/*
     int rcv_max = 0;
     int result = 0;
     
-    result = find_maximum(signals_power, &rcv_max);
+    result = find_pos(signals_power, &rcv_max);
     
     if(result)
     {
@@ -45,6 +103,7 @@ int basic_position(unsigned int * signals_power, t_position * pos_aux)
 		(*pos_aux).angle = 0;
     	(*pos_aux).distance = 0; // WARNING TO BE CHANGED
 	}
+	*/
     return 0;
 }
 
