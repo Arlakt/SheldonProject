@@ -14,7 +14,7 @@
 #endif
 
 #define SIZE_ARRAY 8
-#define MIN_STRENGTH_TO_DETECT	100	// Minimum strength to affirm that a signal is received
+#define MIN_STRENGTH_TO_DETECT	50	// Minimum strength to affirm that a signal is received
 
 #define MAX_STRENGTH_DISTANCE	50 //in cm
 #define MIN_STRENGTH_DISTANCE	400 //in cm

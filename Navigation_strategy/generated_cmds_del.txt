@@ -1,0 +1,3 @@
+cd data/video
+insmod modules/cdc-acm.ko
+./sheldon_position.elf

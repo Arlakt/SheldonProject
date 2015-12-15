@@ -3,6 +3,7 @@
 
 //position of each receiver embedded on the drone
 //angle with the back-to-front axis
+static int angle_step = 45 ;
 //front : 0 ; back : 180 ; right : 90 ; left : 270
 static int receiver_position[SIZE_ARRAY] = {-90, -45, 0, 45, 90, 135, 180, -135};
 
@@ -56,13 +57,17 @@ int find_pos(unsigned int* array, int* angle, int* distance)
 
 		// Compute angle thanks to a weighted average (sum of weights is equal to 1)
 		*angle = (((float)array[maxIndex])/strengthSum) * receiver_position[maxIndex];
-		*angle += (((float)array[indexRight])/strengthSum) * receiver_position[indexRight];
-		*angle += (((float)array[indexLeft])/strengthSum) * receiver_position[indexLeft];
+		*angle += (((float)array[indexRight])/strengthSum) * (receiver_position[maxIndex]+angle_step);
+		*angle += (((float)array[indexLeft])/strengthSum) * (receiver_position[maxIndex]-angle_step);
+		
+		if (*angle>180) *angle -= 360 ;
+		//if (*angle<-180) *angle += 360 ;
 
 		// Compute distance
 		//--------------------------------------------
 		///@todo to improve
 		*distance = (float)((float)(MAX_STRENGTH_DISTANCE - MIN_STRENGTH_DISTANCE)/(MAX_STRENGTH - MIN_STRENGTH)) * array[maxIndex];
+
 	}
 	return result;
 }
