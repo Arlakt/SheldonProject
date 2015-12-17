@@ -1,6 +1,16 @@
 #include "./../API/track_position.h"
 #include "./../../../embedded-sw/serial.h"
 
+#include "./../API/common.h"
+
+int keepRunning;
+
+//handler for a signal
+void intHandlerThread1(int sig){
+	keepRunning=0;
+	printf("thread 1 : find position\n");
+}
+
 //position of each receiver embedded on the drone
 //angle with the back-to-front axis
 static int angle_step = 45 ;
@@ -112,19 +122,17 @@ int basic_position(unsigned int * signals_power, t_position * pos_aux)
     return 0;
 }
 
-//compute the exact angle
-//signals_power is an array containing the signal value on each receiver
-/*
-int exact_position(int * signals_power, t_position * pos_aux)
-{
-    return 0;
-}*/
-
 //function designed to be the main of a thread
 //put the position of the beacon in shared variable pos
 void * compute_position(void * arg){
     int i = 0;
     unsigned int signals_power [8] = {0, 0, 0, 0, 0, 0, 0, 0};
+    
+    //handle the ctrl -c to make the drone land
+	struct sigaction act;
+	memset(&act,0,sizeof(act));
+	act.sa_handler = intHandlerThread1;
+	sigaction(SIGINT, &act, NULL);
    
     //init to read serial port
     int fd = serial_init("/dev/ttyACM0");
@@ -132,7 +140,7 @@ void * compute_position(void * arg){
 		exit(1);
 	
     //while(i < 10){
-    while(1){
+    while(keepRunning){
         //locks its own mutex
         pthread_mutex_lock(&compute_pos_mux);
         

@@ -20,10 +20,12 @@ static int keepRunning = 1;
 pthread_mutex_t compute_pos_mux = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t track_pos_mux   = PTHREAD_MUTEX_INITIALIZER;
 
+
 //handler for a signal
 void intHandler(int sig){
 	keepRunning=0;
 }
+
 
 int main ()
 {
@@ -31,12 +33,13 @@ int main ()
 	int n = 1;
 	int tps = 1;
 	int wait =1;
-	
+	/*
 	//handle the ctrl -c to make the drone land
 	struct sigaction act;
 	memset(&act,0,sizeof(act));
 	act.sa_handler = intHandler;
 	sigaction(SIGINT, &act, NULL);
+	*/
 
     if (init_socket() != 0)
     {

@@ -11,14 +11,22 @@
 #endif
 
 #include "./../API/track_position.h"
+#include "./../API/common.h"
 
-    //declaration and initialization of the different mutex
-    pthread_mutex_t compute_pos_mux = PTHREAD_MUTEX_INITIALIZER;
-    pthread_mutex_t track_pos_mux   = PTHREAD_MUTEX_INITIALIZER;
+int keepRunning = 1;
 
-    //shared variable of position of the beacon
-    t_position pos = {10,100};
+//handler for a signal
+void intHandlerThread3(int sig){
+	keepRunning=0;
+	printf("thread 3 : test position\n");
+}
 
+//declaration and initialization of the different mutex
+pthread_mutex_t compute_pos_mux = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t track_pos_mux   = PTHREAD_MUTEX_INITIALIZER;
+
+//shared variable of position of the beacon
+t_position pos = {10,100};
 		
 int main ()
 {
@@ -35,7 +43,13 @@ int main ()
     if(pthread_create(&thread_position, NULL, compute_position, signal) == -1) {
 	printf("pthread_create position fail");
     }
-
+	
+	//handle the ctrl -c to make the drone land
+	struct sigaction act;
+	memset(&act,0,sizeof(act));
+	act.sa_handler = intHandlerThread3;
+	sigaction(SIGINT, &act, NULL);
+	
 	//init socket sending messages
 	if (init_socket() != 0)
     {

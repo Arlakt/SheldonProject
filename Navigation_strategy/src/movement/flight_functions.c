@@ -151,11 +151,11 @@ char *set_simple_move(char *message, int sequence, direction dir, float power, i
 			break;
 
 		case ANTI_CLKWISE:
-			message = set_complex_move(message,sequence,0,0,0,-(power),wait);
+			message = set_complex_move(message,sequence,0,-0.03,0.03,-(power),wait);
 			break;
 
 		case CLKWISE:
-			message = set_complex_move(message,sequence,0,0,0,power,wait);
+			message = set_complex_move(message,sequence,0,0.03,-0.03,power,wait);
 			break;
 
 		default:

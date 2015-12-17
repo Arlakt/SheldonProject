@@ -1,5 +1,15 @@
 #include "./../API/track_position.h"
 
+#include "./../API/common.h"
+
+int keepRunning;
+
+//handler for a signal
+void intHandlerThread2(int sig){
+	keepRunning=0;
+	printf("thread 2 : track position\n");
+}
+
 //used to prototype track_position
 //prints the position of the beacon anytime the thread is active
 void * print_position(void * arg){
@@ -30,6 +40,12 @@ void * track_position(void * arg){
     struct timeval tv = {0};
     long int elapsed_time = 0; // in microsecondss
     
+	//handle the ctrl -c to make the drone land
+	struct sigaction act;
+	memset(&act,0,sizeof(act));
+	act.sa_handler = intHandlerThread2;
+	sigaction(SIGINT, &act, NULL);
+    
     // moves
     char message [512];
 	int n = 1;
@@ -47,7 +63,7 @@ void * track_position(void * arg){
     }
     else //complex_move(...;float roll_power, float pitch_power, float vertical_power, float yaw_power)
     {
-		/*sleep(1);
+		sleep(1);
         printf("demarrage\n");
 		set_trim(message, n++, wait);
 		
@@ -56,11 +72,11 @@ void * track_position(void * arg){
 			take_off(message, n++, wait);
 			tps++;
 		}
-		*/
+		
 		//stop waiting 40 us after a command send
 		wait = 0;
 		
-		while(1){
+		while(keepRunning){
 		    while (elapsed_time < 35000)
 			{
 				gettimeofday(&tv, NULL);
@@ -71,7 +87,9 @@ void * track_position(void * arg){
 			pthread_mutex_lock(&track_pos_mux);
 			
 			//send the move command
-			printf("Move toward : Angle : %d \nDistance : %d \nElapsed time : %ld\n", pos.angle, pos.distance, elapsed_time);
+			printf("Move toward : Angle : %d \nDistance : %d \n", pos.angle, pos.distance);
+			//reset_com(message, wait);
+			set_simple_move(message, n++, CLKWISE, 0.4, wait);
 			/*if(pos.angle == 0)
 				set_simple_move(message, n++, CLKWISE, 0, wait);
       	 	 else if (pos.angle > 0)
@@ -87,6 +105,8 @@ void * track_position(void * arg){
 
 			i++;
 		}
+		landing(message, n++,wait);
+		sleep(1);
 	}
 	pthread_exit(NULL);
 }
