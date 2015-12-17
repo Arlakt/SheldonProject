@@ -9,13 +9,21 @@
 #include <pthread.h>
 #endif
 
+#include <signal.h>
+#include <string.h>
 #include "./../API/flight_functions.h"
 
 extern int sockfd;
+static int keepRunning = 1;
 
 //declaration and initialization of the different mutex
-    pthread_mutex_t compute_pos_mux = PTHREAD_MUTEX_INITIALIZER;
-    pthread_mutex_t track_pos_mux   = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t compute_pos_mux = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t track_pos_mux   = PTHREAD_MUTEX_INITIALIZER;
+
+//handler for a signal
+void intHandler(int sig){
+	keepRunning=0;
+}
 
 int main ()
 {
@@ -23,6 +31,12 @@ int main ()
 	int n = 1;
 	int tps = 1;
 	int wait =1;
+	
+	//handle the ctrl -c to make the drone land
+	struct sigaction act;
+	memset(&act,0,sizeof(act));
+	act.sa_handler = intHandler;
+	sigaction(SIGINT, &act, NULL);
 
     if (init_socket() != 0)
     {
@@ -40,15 +54,20 @@ int main ()
 			tps++;
 		}
 		tps = 0;
+		
+		//test de fonction
+		at_config(message, n++, "pic:ultrasound_freq","2");
+		
 		//while(tps < 133)
-		while(1)
+		//while(1)
+		while(keepRunning)
 		{
 			reset_com(message, wait);
 	 		tps++;
 		}
 		tps = 0;
-
-        	printf("debut commande\n");
+/*
+        printf("debut commande\n");
 
 		while(tps < 500)
 		{
@@ -65,6 +84,7 @@ int main ()
 	 		tps++;
 		}
 		tps = 0;
+*/
 		landing(message, n++,wait);
 		sleep(1);
 
