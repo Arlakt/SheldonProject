@@ -2,7 +2,8 @@
 
 #include "./../API/common.h"
 
-int keepRunning;
+extern int keepRunning;
+extern int testVariable;
 
 //handler for a signal
 void intHandlerThread2(int sig){
@@ -87,9 +88,32 @@ void * track_position(void * arg){
 			pthread_mutex_lock(&track_pos_mux);
 			
 			//send the move command
-			printf("Move toward : Angle : %d \nDistance : %d \n", pos.angle, pos.distance);
+			//printf("Move toward : Angle : %d Distance : %d \n", pos.angle, pos.distance);
 			//reset_com(message, wait);
-			set_simple_move(message, n++, CLKWISE, 0.4, wait);
+			
+			// TEST OF THE ROTATION
+			if(testVariable == 0)
+			{
+				printf("Waiting...\n");
+				set_simple_move(message, n++, CLKWISE, 0, wait);
+			}
+			else if(testVariable == 1)
+			{
+				printf("Rotation clockwise\n");
+				set_simple_move(message, n++, CLKWISE, 0.4, wait);
+			}
+			else if(testVariable == 2)
+			{	
+				printf("Rotation counter-clockwise\n");
+				set_simple_move(message, n++, ANTI_CLKWISE, 0.4, wait);
+			}
+			else if(testVariable == 9)
+			{
+				printf("Landing...\n");
+				set_simple_move(message, n++, CLKWISE, 0, wait);
+				keepRunning = 0;		
+			}
+
 			/*if(pos.angle == 0)
 				set_simple_move(message, n++, CLKWISE, 0, wait);
       	 	 else if (pos.angle > 0)

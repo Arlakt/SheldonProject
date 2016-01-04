@@ -3,7 +3,7 @@
 
 #include "./../API/common.h"
 
-int keepRunning;
+extern int keepRunning;
 
 //handler for a signal
 void intHandlerThread1(int sig){

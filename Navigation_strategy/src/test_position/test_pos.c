@@ -14,6 +14,7 @@
 #include "./../API/common.h"
 
 int keepRunning = 1;
+int testVariable = 0;
 
 //handler for a signal
 void intHandlerThread3(int sig){
@@ -62,11 +63,12 @@ int main ()
 		}
 	}
     
-    //********************************************************************
-    //********************************************************************
-    //simulation of the drone getting in line with a beacon
-    //********************************************************************
-    //********************************************************************
+    while(keepRunning)
+    {
+        printf("\n> ");
+        scanf("%d", &testVariable);
+    }
+
 
     //waiting for the threads to finish before closing the main
     pthread_join(thread_position, NULL);
