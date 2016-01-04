@@ -1,6 +1,6 @@
 CC = arm-linux-gnueabi-gcc
 CFLAGS = -W -Wall -march=armv7-a -std=gnu99 -pthread
-LDFLAGS =
+LDFLAGS = -pthread
 
 CFLAGS += -I .
 

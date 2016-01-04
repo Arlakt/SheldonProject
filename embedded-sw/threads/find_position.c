@@ -67,7 +67,6 @@ int find_pos(unsigned int* array, int* angle, int* distance)
 		*angle += (((float)array[indexLeft])/strengthSum) * (receiver_position[maxIndex]-angle_step);
 		
 		if (*angle>180) *angle -= 360 ;
-		//if (*angle<-180) *angle += 360 ;
 
 		// Compute distance
 		//--------------------------------------------
@@ -78,8 +77,10 @@ int find_pos(unsigned int* array, int* angle, int* distance)
 	return result;
 }
 
-//finds the receiver with the maximum value
-//signals_power is an array containing the signal value on each receiver
+/**
+ * @brief	Get emitter position in pos_aux thanks to data from signals_power
+ *
+ */
 int basic_position(unsigned int * signals_power, t_position * pos_aux)
 {
 	int angle = 0;
@@ -98,38 +99,15 @@ int basic_position(unsigned int * signals_power, t_position * pos_aux)
 		(*pos_aux).angle = 0;
     	(*pos_aux).distance = 0; // WARNING TO BE CHANGED
 	}
-	/*
-    int rcv_max = 0;
-    int result = 0;
-    
-    result = find_pos(signals_power, &rcv_max);
-    
-    if(result)
-    {
-    	(*pos_aux).angle = receiver_position[rcv_max];
-    	(*pos_aux).distance = signals_power[rcv_max];
-	}
-	else
-	{
-		(*pos_aux).angle = 0;
-    	(*pos_aux).distance = 0; // WARNING TO BE CHANGED
-	}
-	*/
     return 0;
 }
 
-//compute the exact angle
-//signals_power is an array containing the signal value on each receiver
-/*
-int exact_position(int * signals_power, t_position * pos_aux)
-{
-    return 0;
-}*/
 
-//function designed to be the main of a thread
-//put the position of the beacon in shared variable pos
+/**
+ * @brief	Function designed to be the main of a thread
+ * 			Compute emitter position and update it in the global variable
+ */
 void * compute_position(void * arg){
-    int i = 0;
     unsigned int signals_power [8] = {0, 0, 0, 0, 0, 0, 0, 0};
    
     //init to read serial port
@@ -156,10 +134,8 @@ void * compute_position(void * arg){
 
         basic_position(signals_power, &pos);
                 
-        //
-		//release the mutex for printing
+        // unlock mutex for tracking thread
         pthread_mutex_unlock(&track_pos_mux);
-		i++;
     }
     pthread_exit(NULL);
 }

@@ -41,12 +41,6 @@ int main ()
     if(pthread_create(&thread_track_position, NULL, track_position, NULL) == -1) {
 		printf("pthread_create position fail");
 	}
-    
-    //********************************************************************
-    //********************************************************************
-    //simulation of the drone getting in line with a beacon
-    //********************************************************************
-    //********************************************************************
 
     //waiting for the threads to finish before closing the main
     pthread_join(thread_position, NULL);
