@@ -15,7 +15,7 @@
 
 #define ANGLE_PRECISION 10 // in degrees
 
-void * print_position(void);
+void print_position(void);
 void * track_position(void * arg);
 
 #endif // TRACK_POSITION_H

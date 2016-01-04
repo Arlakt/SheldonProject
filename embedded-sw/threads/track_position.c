@@ -8,7 +8,7 @@ extern pthread_mutex_t track_pos_mux;
 /**
  *	@brief	Print current position of the emitter on standard output
  */
-void * print_position(void)
+void print_position(void)
 {
 	// @todo make a mutex especially for the global variable pos
 	printf("Angle : %d - Distance : %d \n", pos.angle, pos.distance);
