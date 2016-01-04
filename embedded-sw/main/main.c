@@ -10,16 +10,17 @@
 #include <sys/time.h>
 #endif
 
-#include "./../API/track_position.h"
+#include <threads/find_position.h>
+#include <threads/track_position.h>
 
-    //declaration and initialization of the different mutex
-    pthread_mutex_t compute_pos_mux = PTHREAD_MUTEX_INITIALIZER;
-    pthread_mutex_t track_pos_mux   = PTHREAD_MUTEX_INITIALIZER;
+//declaration and initialization of the different mutex
+pthread_mutex_t compute_pos_mux = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t track_pos_mux   = PTHREAD_MUTEX_INITIALIZER;
 
-    //shared variable of position of the beacon
-    t_position pos = {10,100};
+//shared variable of position of the beacon
+t_position pos = {10,100};
 
-		
+	
 int main ()
 {
 	unsigned int signal [8] = {128, 255, 98, 3, 5, 0, 1, 0};
