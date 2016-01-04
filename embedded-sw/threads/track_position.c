@@ -1,4 +1,6 @@
 #include "track_position.h"
+#include "find_position.h"
+#include <movement/UDP_sender.h>
 
 extern pthread_mutex_t compute_pos_mux;
 extern pthread_mutex_t track_pos_mux;

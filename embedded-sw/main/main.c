@@ -18,7 +18,7 @@ pthread_mutex_t compute_pos_mux = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t track_pos_mux   = PTHREAD_MUTEX_INITIALIZER;
 
 //shared variable of position of the beacon
-t_position pos = {10,100};
+//t_position pos = {10,100}; // moved to find_position.c
 
 	
 int main ()
@@ -37,16 +37,9 @@ int main ()
 	printf("pthread_create position fail");
     }
 
-	//init socket sending messages
-	if (init_socket() != 0)
-    {
-        printf("[FAILED] Socket initialization failed\n");
-    }
-    else //creation of the thread tracking the position of the beacon
-    {
-		if(pthread_create(&thread_track_position, NULL, track_position, NULL) == -1) {
+	//creation of the thread tracking the position of the beacon
+    if(pthread_create(&thread_track_position, NULL, track_position, NULL) == -1) {
 		printf("pthread_create position fail");
-		}
 	}
     
     //********************************************************************
