@@ -1,4 +1,5 @@
-CC = arm-linux-gnueabi-gcc -pthread
+COMPILER_PATH = C:\Sourcery_CodeBench\bin
+CC = $(COMPILER_PATH)\arm-none-linux-gnueabi-gcc -pthread
 CFLAGS = -W -Wall -march=armv7-a -std=gnu99
 CXXFLAGS = -W -Wall -march=armv7-a -std=gnu99
 LDFLAGS =
