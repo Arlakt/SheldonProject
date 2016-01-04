@@ -1,4 +1,4 @@
-#include "./../API/flight_functions.h"
+#include "flight_functions.h"
 // CONFIGURATION DU DRONE
 //#define TYPE_DE_CIBLE "\"detect:detect_type\",\"12\""
 

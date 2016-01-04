@@ -1,5 +1,11 @@
-#include "./../API/track_position.h"
-#include "./../../../embedded-sw/serial.h"
+#include "find_position.h"
+//#include "track_position.h"
+#include <serial/serial.h>
+
+t_position pos = {0, 100};
+
+extern pthread_mutex_t compute_pos_mux;
+extern pthread_mutex_t track_pos_mux;
 
 //position of each receiver embedded on the drone
 //angle with the back-to-front axis

@@ -1,4 +1,7 @@
-#include "./../API/track_position.h"
+#include "track_position.h"
+
+extern pthread_mutex_t compute_pos_mux;
+extern pthread_mutex_t track_pos_mux;
 
 //used to prototype track_position
 //prints the position of the beacon anytime the thread is active
