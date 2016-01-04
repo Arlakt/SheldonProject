@@ -14,7 +14,7 @@
 #include "./../API/flight_functions.h"
 
 extern int sockfd;
-static int keepRunning = 1;
+int keepRunning = 1;
 
 //declaration and initialization of the different mutex
 pthread_mutex_t compute_pos_mux = PTHREAD_MUTEX_INITIALIZER;

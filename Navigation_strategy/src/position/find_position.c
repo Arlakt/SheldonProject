@@ -11,6 +11,8 @@ void intHandlerThread1(int sig){
 	printf("thread 1 : find position\n");
 }
 
+t_position pos;
+
 //position of each receiver embedded on the drone
 //angle with the back-to-front axis
 static int angle_step = 45 ;

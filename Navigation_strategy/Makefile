@@ -4,23 +4,19 @@ CXXFLAGS = -W -Wall -march=armv7-a -std=gnu99
 LDFLAGS =
 SRCDIR= ./src
 TESTPOSDIR= ./src/test_position
-TESTMOVDIR= ./src/test_movement
 BUILDDIR= ./build
 MOVEDIR= $(SRCDIR)/movement
 POSIDIR= $(SRCDIR)/position
-EXEC = clean sheldon_position.elf sheldon_move.elf
+EXEC = sheldon_position.elf
 
-SRCS = $(MOVEDIR)/at_commands_builder.c $(MOVEDIR)/flight_functions.c $(MOVEDIR)/UDP_sender.c $(POSIDIR)/find_position.c $(POSIDIR)/track_position.c $(TESTPOSDIR)/test_pos.c $(TESTMOVDIR)/test_mov.c
+SRCS = $(MOVEDIR)/at_commands_builder.c $(MOVEDIR)/flight_functions.c $(MOVEDIR)/UDP_sender.c $(POSIDIR)/find_position.c $(POSIDIR)/track_position.c $(TESTPOSDIR)/test_pos.c
 
-OBJS = $(BUILDDIR)/at_commands_builder.o $(BUILDDIR)/flight_functions.o $(BUILDDIR)/UDP_sender.o $(BUILDDIR)/find_position.o $(BUILDDIR)/track_position.o 
+OBJS = $(BUILDDIR)/at_commands_builder.o $(BUILDDIR)/flight_functions.o $(BUILDDIR)/UDP_sender.o $(BUILDDIR)/find_position.o $(BUILDDIR)/track_position.o  $(TESTPOSDIR)/test_pos.o
 
-all : $(EXEC)
+all : clean $(EXEC)
 	
-sheldon_position.elf: $(OBJS) $(BUILDDIR)/test_pos.o
-	$(CC) $(CFLAGS) $(OBJS) $(BUILDDIR)/test_pos.o -o $(BUILDDIR)/sheldon_position.elf
-
-sheldon_move.elf: $(OBJS) $(BUILDDIR)/test_mov.o
-	$(CC) $(CFLAGS) $(OBJS) $(BUILDDIR)/test_mov.o -o $(BUILDDIR)/sheldon_move.elf
+sheldon_position.elf: $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(BUILDDIR)/sheldon_position.elf
 
 $(BUILDDIR)/at_commands_builder.o: $(MOVEDIR)/at_commands_builder.c
 	$(CC) -o $(BUILDDIR)/at_commands_builder.o -c $(MOVEDIR)/at_commands_builder.c $(CXXFLAGS)
@@ -40,10 +36,10 @@ $(BUILDDIR)/track_position.o: $(POSIDIR)/track_position.c
 $(BUILDDIR)/test_pos.o: $(TESTPOSDIR)/test_pos.c
 	$(CC) -o $(BUILDDIR)/test_pos.o -c $(TESTPOSDIR)/test_pos.c $(CXXFLAGS)
 
-$(BUILDDIR)/test_mov.o: $(TESTMOVDIR)/test_mov.c
-	$(CC) -o $(BUILDDIR)/test_mov.o -c $(TESTMOVDIR)/test_mov.c $(CXXFLAGS)
 clean:
 	rm -rf $(BUILDDIR)/*.o
 	rm -rf $(BUILDDIR)/~.o
 	rm -rf $(BUILDDIR)/*.elf
 	rm -rf $(BUILDDIR)/~.elf
+	rm -rf $(BUILDDIR)
+	mkdir $(BUILDDIR)
