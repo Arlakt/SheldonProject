@@ -64,6 +64,8 @@ void * track_position(void * arg){
 			}
 
 			pthread_mutex_lock(&track_pos_mux);
+
+			print_position();
 /*			
 			///////////////////////////////////////////////////////////////////////
 			// MOVES TO HAVE THE RIGHT ANGLE AND RIGHT DISTANCE FROM THE EMIITER
