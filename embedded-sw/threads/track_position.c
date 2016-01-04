@@ -1,9 +1,19 @@
 #include "track_position.h"
 #include "find_position.h"
 #include <movement/UDP_sender.h>
+#include <signal.h> // for signals handling
+#include <string.h> // for memset function
 
+extern int keepRunning;
 extern pthread_mutex_t compute_pos_mux;
 extern pthread_mutex_t track_pos_mux;
+
+//handler for a signal
+void intHandlerThread3(int sig){
+	keepRunning=0;
+	printf("CTRL+C signal in track_position\n");
+}
+
 
 /**
  *	@brief	Print current position of the emitter on standard output
@@ -31,6 +41,12 @@ void * track_position(void * arg){
 	int tps = 1;
 	int wait =1;
 
+	//handle the ctrl -c to make the drone land
+	struct sigaction act;
+	memset(&act,0,sizeof(act));
+	act.sa_handler = intHandlerThread3;
+	sigaction(SIGINT, &act, NULL);
+
     gettimeofday(&old_tv, NULL); 
 
 	if (init_socket() != 0)
@@ -56,7 +72,7 @@ void * track_position(void * arg){
 		//stop waiting 40 us after a command send
 		wait = 0;
 		
-		while(1){
+		while(keepRunning){
 		    while (elapsed_time < 35000)
 			{
 				gettimeofday(&tv, NULL);
@@ -85,6 +101,13 @@ void * track_position(void * arg){
 			gettimeofday(&old_tv, NULL);
 			elapsed_time=0;
 		}
+/*
+		///////////////////////////////////////////
+		// LANDING
+		///////////////////////////////////////////
+		landing(message, n++, wait);
+		sleep(1);
+*/
 	}
 	pthread_exit(NULL);
 }

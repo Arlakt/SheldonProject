@@ -1,9 +1,11 @@
 #include "find_position.h"
-//#include "track_position.h"
 #include <serial/serial.h>
+#include <signal.h> // for signals handling
+#include <string.h> // for memset function
 
 t_position pos = {0, 100};
 
+extern int keepRunning;
 extern pthread_mutex_t compute_pos_mux;
 extern pthread_mutex_t track_pos_mux;
 
@@ -12,6 +14,14 @@ extern pthread_mutex_t track_pos_mux;
 static int angle_step = 45 ;
 //front : 0 ; back : 180 ; right : 90 ; left : 270
 static int receiver_position[SIZE_ARRAY] = {-90, -45, 0, 45, 90, 135, 180, -135};
+
+
+//handler for a signal
+void intHandlerThread2(int sig){
+	keepRunning=0;
+	printf("CTRL+C signal in find_position\n");
+}
+
 
 //finds the receiver receiving the maximum signal
 //returns 1 if there is actually a result greater than the minimum threshold
@@ -115,8 +125,13 @@ void * compute_position(void * arg){
 	if (fd == -1)
 		exit(1);
 	
-    //while(i < 10){
-    while(1){
+	//handle the ctrl -c to make the drone land
+	struct sigaction act;
+	memset(&act,0,sizeof(act));
+	act.sa_handler = intHandlerThread2;
+	sigaction(SIGINT, &act, NULL);
+
+    while(keepRunning){
         //locks its own mutex
         pthread_mutex_lock(&compute_pos_mux);
         

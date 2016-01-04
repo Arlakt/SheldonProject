@@ -10,6 +10,8 @@
 #include <sys/time.h>
 #endif
 
+#include <signal.h> // for signals handling
+#include <string.h> // for memset function
 #include <threads/find_position.h>
 #include <threads/track_position.h>
 
@@ -17,10 +19,15 @@
 pthread_mutex_t compute_pos_mux = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t track_pos_mux   = PTHREAD_MUTEX_INITIALIZER;
 
-//shared variable of position of the beacon
-//t_position pos = {10,100}; // moved to find_position.c
+int keepRunning = 1;
 
-	
+
+//handler for a signal
+void intHandlerThread1(int sig){
+    keepRunning=0;
+    printf("CTRL+C signal in main\n");
+}	
+
 int main ()
 {
 	unsigned int signal [8] = {128, 255, 98, 3, 5, 0, 1, 0};
@@ -28,6 +35,12 @@ int main ()
     //declaration of the different threads
     pthread_t thread_position;
     pthread_t thread_track_position;
+
+    //handle the ctrl -c to make the drone land
+    struct sigaction act;
+    memset(&act,0,sizeof(act));
+    act.sa_handler = intHandlerThread1;
+    sigaction(SIGINT, &act, NULL);
 
     //immediate lock of the mutex printing the position so first we calculate it at start
     pthread_mutex_lock(&track_pos_mux);
