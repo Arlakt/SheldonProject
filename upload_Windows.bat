@@ -1,16 +1,29 @@
-echo open 192.168.1.1>> ftpcmd.dat
-echo user>> ftpcmd.dat
-echo put sheldon_position.elf>> ftpcmd.dat
-echo disconnect >>ftpcmd.dat
-echo quit>> ftpcmd.dat
+echo off
+mkdir scripts
+cd scripts
+del scripts/ftpcmd.dat
+del scripts/generated_cmds_del.txt
+set EXE=sheldon_position.elf
 
-ftp -s:ftpcmd.dat
-del ftpcmd.dat
+rem FTP uploading
+cd scripts
+echo open 192.168.1.1 >> ftpcmd.dat
+echo user >> ftpcmd.dat
+echo put %EXE% >> ftpcmd.dat
+echo disconnect >> ftpcmd.dat
+echo quit >> ftpcmd.dat
+cd ../build
+ftp -s:../scripts/ftpcmd.dat
+
+rem TELNET script for program start
+cd ../scripts
+echo killall -9 %EXE% >> generated_cmds_del.txt
+echo killall -9 program.elf >> generated_cmds_del.txt
+echo cd data/video >> generated_cmds_del.txt
+echo insmod modules/cdc-acm.ko >> generated_cmds_del.txt
+echo chmod +x %EXE% >> generated_cmds_del.txt
+echo ./%EXE% >> generated_cmds_del.txt
 cd ..
+"C:\Program Files\MATLAB\R2014a\toolbox\idelink\foundation\hostapps\plink.exe" -telnet -P 23 192.168.1.1 < scripts/generated_cmds_del.txt
 
-del generated_cmds_del.txt
-rem insmod data/video/modules/cdc-acm.ko
-echo cd data/video>>generated_cmds_del.txt
-echo insmod modules/cdc-acm.ko>>generated_cmds_del.txt
-echo ./sheldon_position.elf>>generated_cmds_del.txt
-"C:\Program Files\MATLAB\R2014a\toolbox\idelink\foundation\hostapps\plink.exe" -telnet -P 23 192.168.1.1 < generated_cmds_del.txt
+rm -rf scripts
