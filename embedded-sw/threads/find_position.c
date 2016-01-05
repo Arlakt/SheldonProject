@@ -15,6 +15,8 @@ static int angle_step = 45 ;
 //front : 0 ; back : 180 ; right : 90 ; left : 270
 static int receiver_position[SIZE_ARRAY] = {-90, -45, 0, 45, 90, 135, 180, -135};
 
+static int distanceHistory[DISTANCE_HISTORY_SIZE] = {0};
+static int distHistPointer=0, distHistfull=0;
 
 //handler for a signal
 void intHandlerThread2(int sig){
@@ -43,6 +45,42 @@ int find_maximum(unsigned int * signals_power, int* max)
     return result;
 }
 
+/**
+ * @brief	Compute the distance with a moving average
+ *			keeping history of previous distances
+ */
+int computeMeanDistance(int currentDistance)
+{
+	int distance=0, i=0;
+
+	distanceHistory[distHistPointer] = currentDistance;
+	distHistPointer++;
+	if(distHistPointer >= DISTANCE_HISTORY_SIZE)
+	{
+		distHistfull = 1;
+		distHistPointer = 0;
+	}
+
+	// If the history has been fully filled, do average on the whole history
+	if(distHistfull)
+	{
+		for(i=0;i<DISTANCE_HISTORY_SIZE;i++)
+			distance += distanceHistory[i];
+		distance /= DISTANCE_HISTORY_SIZE;
+	}
+	// If it is the first time buffer is fill, do not do average on the whole history
+	else
+	{
+		for(i=0;i<distHistPointer;i++)
+			distance += distanceHistory[i];
+		if(i==0)
+			distance = 0;
+		else
+			distance /= i;
+	}
+	return distance;
+}
+
 /*
  * @brief	Compute source position from the array of signals strengths
  * @param	array 	pointer to the array of strengths
@@ -56,6 +94,7 @@ int find_pos(unsigned int* array, int* angle, int* distance)
 	int result = 0;
 	int maxIndex, indexLeft, indexRight;
 	unsigned long strengthSum = 0;
+	int currentDistance = 0;
 
 	result = find_maximum(array, &maxIndex);
 
@@ -81,8 +120,10 @@ int find_pos(unsigned int* array, int* angle, int* distance)
 		// Compute distance
 		//--------------------------------------------
 		///@todo to improve
-		*distance = (float)((float)(MAX_STRENGTH_DISTANCE - MIN_STRENGTH_DISTANCE)/(MAX_STRENGTH - MIN_STRENGTH)) * array[maxIndex];
+		currentDistance = (float)((float)(MAX_STRENGTH_DISTANCE - MIN_STRENGTH_DISTANCE)/(MAX_STRENGTH - MIN_STRENGTH)) * array[maxIndex] + MIN_STRENGTH_DISTANCE;
+		*distance = computeMeanDistance(currentDistance);
 
+		printf("Puissance : %d - Distance : %d\n",array[maxIndex],*distance);
 	}
 	return result;
 }

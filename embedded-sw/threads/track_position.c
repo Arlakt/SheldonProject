@@ -1,5 +1,6 @@
 #include "track_position.h"
 #include "find_position.h"
+#include <movement/flight_functions.h>
 #include <movement/UDP_sender.h>
 #include <signal.h> // for signals handling
 #include <string.h> // for memset function
@@ -55,7 +56,7 @@ void * track_position(void * arg){
     }
     else
     {
-/*
+
     	//////////////////////////////////////////////////////////
     	//	TAKING OFF 
     	//////////////////////////////////////////////////////////
@@ -68,7 +69,7 @@ void * track_position(void * arg){
 			take_off(message, n++, wait);
 			tps++;
 		}
-*/		
+		
 		//stop waiting 40 us after a command send
 		wait = 0;
 		
@@ -81,33 +82,42 @@ void * track_position(void * arg){
 
 			pthread_mutex_lock(&track_pos_mux);
 
-			print_position();
-/*			
+			//print_position();
+			
 			///////////////////////////////////////////////////////////////////////
 			// MOVES TO HAVE THE RIGHT ANGLE AND RIGHT DISTANCE FROM THE EMIITER
 			///////////////////////////////////////////////////////////////////////
 			
 			// @todo managing the distance
-			if(pos.angle => -ANGLE_PRECISION/2 && pos.angle <= ANGLE_PRECISION/2)
+			if(pos.angle >= -ANGLE_PRECISION/2 && pos.angle <= ANGLE_PRECISION/2)
+			{
 				set_simple_move(message, n++, CLKWISE, 0, wait);
+				// And now manage distance
+				if(pos.distance > 200) // in cm
+					set_simple_move(message, n++, FRONT, 0.1, wait);
+				else if(pos.distance < 180) // in cm
+					set_simple_move(message, n++, BACK, 0.1, wait);
+				else
+					set_simple_move(message, n++, FRONT, 0, wait); // useless ?????
+			}
       	 	else if (pos.angle > ANGLE_PRECISION/2)
-				set_simple_move(message, n++, CLKWISE, 0.4, wait);
+				set_simple_move(message, n++, CLKWISE, 0.5, wait);
 			else
-				set_simple_move(message, n++, ANTI_CLKWISE, 0.4,wait);
+				set_simple_move(message, n++, ANTI_CLKWISE, 0.5,wait);
 			
-*/			
+			
 			pthread_mutex_unlock(&compute_pos_mux);
 
 			gettimeofday(&old_tv, NULL);
 			elapsed_time=0;
 		}
-/*
+
 		///////////////////////////////////////////
 		// LANDING
 		///////////////////////////////////////////
 		landing(message, n++, wait);
 		sleep(1);
-*/
+
 	}
 	pthread_exit(NULL);
 }
