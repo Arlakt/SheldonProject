@@ -27,6 +27,7 @@
 typedef struct _position{
     int angle; //in degrees, modulo 360
     int distance; //in meter
+    int signalDetected; // boolean to know if a signal has been detected
 } t_position;
 
 //shared variable of position of the beacon

@@ -3,7 +3,7 @@
 #include <signal.h> // for signals handling
 #include <string.h> // for memset function
 
-t_position pos = {0, 100};
+t_position pos = {0, 100, 0};
 
 extern int keepRunning;
 extern pthread_mutex_t compute_pos_mux;
@@ -122,8 +122,10 @@ int find_pos(unsigned int* array, int* angle, int* distance)
 		///@todo to improve
 		currentDistance = (float)((float)(MAX_STRENGTH_DISTANCE - MIN_STRENGTH_DISTANCE)/(MAX_STRENGTH - MIN_STRENGTH)) * array[maxIndex] + MIN_STRENGTH_DISTANCE;
 		*distance = computeMeanDistance(currentDistance);
+		//*distance = currentDistance;
 
-		printf("Puissance : %d - Distance : %d\n",array[maxIndex],*distance);
+		// Only for distance calibration
+		//printf("Puissance : %d - Distance : %d\n",array[maxIndex],*distance);
 	}
 	return result;
 }
@@ -144,11 +146,11 @@ int basic_position(unsigned int * signals_power, t_position * pos_aux)
     {
     	(*pos_aux).angle = angle;
     	(*pos_aux).distance = distance;
+    	(*pos_aux).signalDetected = 1; // true	
 	}
 	else
 	{
-		(*pos_aux).angle = 0;
-    	(*pos_aux).distance = 0; // WARNING TO BE CHANGED
+		(*pos_aux).signalDetected = 0; // false
 	}
     return 0;
 }

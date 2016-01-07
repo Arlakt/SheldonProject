@@ -4,6 +4,7 @@
 #include <movement/UDP_sender.h>
 #include <signal.h> // for signals handling
 #include <string.h> // for memset function
+#include <time.h>
 
 extern int keepRunning;
 extern pthread_mutex_t compute_pos_mux;
@@ -21,8 +22,19 @@ void intHandlerThread3(int sig){
  */
 void print_position(void)
 {
+	time_t rawtime;
+	struct tm * timeinfo;
+	char buffer [80];
+
+	time (&rawtime);
+	timeinfo = localtime (&rawtime);
+	strftime (buffer, 80, "%X", timeinfo);
+
 	// @todo make a mutex especially for the global variable pos
-	printf("Angle : %d - Distance : %d \n", pos.angle, pos.distance);
+	if(pos.signalDetected)
+		printf("%s > Angle : %d - Distance : %d \n", buffer, pos.angle, pos.distance);
+	else
+		printf("%s > No signal\n", buffer);
 }
 
 /**
@@ -64,11 +76,11 @@ void * track_position(void * arg){
         printf("Drone starts flying...\n");
 		set_trim(message, n++, wait);
 		
-		while(tps < 167)
-		{
-			take_off(message, n++, wait);
-			tps++;
-		}
+		// while(tps < 167)
+		// {
+		// 	take_off(message, n++, wait);
+		// 	tps++;
+		// }
 		
 		//stop waiting 40 us after a command send
 		wait = 0;
@@ -82,30 +94,39 @@ void * track_position(void * arg){
 
 			pthread_mutex_lock(&track_pos_mux);
 
-			//print_position();
+			print_position();
 			
 			///////////////////////////////////////////////////////////////////////
 			// MOVES TO HAVE THE RIGHT ANGLE AND RIGHT DISTANCE FROM THE EMIITER
 			///////////////////////////////////////////////////////////////////////
+			reset_com(message, wait);
 			
-			// @todo managing the distance
-			if(pos.angle >= -ANGLE_PRECISION/2 && pos.angle <= ANGLE_PRECISION/2)
-			{
-				set_simple_move(message, n++, CLKWISE, 0, wait);
-				// And now manage distance
-				if(pos.distance > 200) // in cm
-					set_simple_move(message, n++, FRONT, 0.1, wait);
-				else if(pos.distance < 180) // in cm
-					set_simple_move(message, n++, BACK, 0.1, wait);
-				else
-					set_simple_move(message, n++, FRONT, 0, wait); // useless ?????
-			}
-      	 	else if (pos.angle > ANGLE_PRECISION/2)
-				set_simple_move(message, n++, CLKWISE, 0.5, wait);
-			else
-				set_simple_move(message, n++, ANTI_CLKWISE, 0.5,wait);
-			
-			
+			// If no signal has been detected
+			// if(!pos.signalDetected)
+			// {
+			// 	// stop moving
+			// 	set_simple_move(message, n++, FRONT, 0, wait);
+			// }
+			// // If a signal has been detected, move !
+			// else
+			// {
+			// 	// @todo managing the distance
+			// 	if(pos.angle >= -ANGLE_PRECISION/2 && pos.angle <= ANGLE_PRECISION/2)
+			// 	{
+			// 		// And now manage distance
+			// 		if(pos.distance > 200) // in cm
+			// 			set_simple_move(message, n++, FRONT, 0.05, wait);
+			// 		else if(pos.distance < 180) // in cm
+			// 			set_simple_move(message, n++, BACK, 0.05, wait);
+			// 		else
+			// 			set_simple_move(message, n++, FRONT, 0, wait);	
+			// 	}				
+	  //     	 	else if (pos.angle > ANGLE_PRECISION/2)
+			// 		set_simple_move(message, n++, CLKWISE, 0.5, wait);
+			// 	else
+			// 		set_simple_move(message, n++, ANTI_CLKWISE, 0.5,wait);
+				
+			// }
 			pthread_mutex_unlock(&compute_pos_mux);
 
 			gettimeofday(&old_tv, NULL);
@@ -115,7 +136,7 @@ void * track_position(void * arg){
 		///////////////////////////////////////////
 		// LANDING
 		///////////////////////////////////////////
-		landing(message, n++, wait);
+		//landing(message, n++, wait);
 		sleep(1);
 
 	}
