@@ -46,7 +46,7 @@ void * track_position(void * arg){
 	// check time interval
     struct timeval old_tv = {0};
     struct timeval tv = {0};
-    long int elapsed_time = 0; // in microsecondss
+    long unsigned int elapsed_time = 0; // in microsecondss
     
     // moves
     char message [512];
@@ -76,15 +76,29 @@ void * track_position(void * arg){
         printf("Drone starts flying...\n");
 		set_trim(message, n++, wait);
 		
-		// while(tps < 167)
-		// {
-		// 	take_off(message, n++, wait);
-		// 	tps++;
-		// }
+		printf("Taking off...\n");
+		while(tps < 167)
+		{
+			take_off(message, n++, wait);
+			tps++;
+		}
 		
 		//stop waiting 40 us after a command send
 		wait = 0;
-		
+
+		// Go up to be at shoulder level
+		printf("Going up...\n");
+		gettimeofday(&old_tv, NULL);
+		elapsed_time = 0;
+		while(elapsed_time < 2)
+		{
+			set_simple_move(message, n++, UP, 1, wait);
+			gettimeofday(&tv, NULL);
+			elapsed_time = (tv.tv_sec-old_tv.tv_sec);
+		}
+		set_simple_move(message, n++, UP, 0.0, wait);
+		elapsed_time = 35000;
+
 		while(keepRunning){
 		    while (elapsed_time < 35000)
 			{
@@ -101,32 +115,34 @@ void * track_position(void * arg){
 			///////////////////////////////////////////////////////////////////////
 			reset_com(message, wait);
 			
-			// If no signal has been detected
-			// if(!pos.signalDetected)
-			// {
-			// 	// stop moving
-			// 	set_simple_move(message, n++, FRONT, 0, wait);
-			// }
-			// // If a signal has been detected, move !
-			// else
-			// {
-			// 	// @todo managing the distance
-			// 	if(pos.angle >= -ANGLE_PRECISION/2 && pos.angle <= ANGLE_PRECISION/2)
-			// 	{
-			// 		// And now manage distance
-			// 		if(pos.distance > 200) // in cm
-			// 			set_simple_move(message, n++, FRONT, 0.05, wait);
-			// 		else if(pos.distance < 180) // in cm
-			// 			set_simple_move(message, n++, BACK, 0.05, wait);
-			// 		else
-			// 			set_simple_move(message, n++, FRONT, 0, wait);	
-			// 	}				
-	  //     	 	else if (pos.angle > ANGLE_PRECISION/2)
-			// 		set_simple_move(message, n++, CLKWISE, 0.5, wait);
-			// 	else
-			// 		set_simple_move(message, n++, ANTI_CLKWISE, 0.5,wait);
+			//If no signal has been detected
+			if(!pos.signalDetected)
+			{
+				// stop moving
+				set_simple_move(message, n++, FRONT, 0, wait);
+			}
+			// If a signal has been detected, move !
+			else
+			{
+				if(pos.angle >= -ANGLE_PRECISION/2 && pos.angle <= ANGLE_PRECISION/2)
+				{
+					// For now, always move forward when the source in front of the drone
+					set_simple_move(message, n++, FRONT, 0.05, wait);
+
+					// And now manage distance
+					// if(pos.distance > 200) // in cm
+					// 	set_simple_move(message, n++, FRONT, 0.05, wait);
+					// else if(pos.distance < 180) // in cm
+					// 	set_simple_move(message, n++, BACK, 0.05, wait);
+					// else
+					// 	set_simple_move(message, n++, FRONT, 0, wait);	
+				}				
+	      	 	else if (pos.angle > ANGLE_PRECISION/2)
+					set_simple_move(message, n++, CLKWISE, 0.5, wait);
+				else
+					set_simple_move(message, n++, ANTI_CLKWISE, 0.5,wait);
 				
-			// }
+			}
 			pthread_mutex_unlock(&compute_pos_mux);
 
 			gettimeofday(&old_tv, NULL);
@@ -136,7 +152,7 @@ void * track_position(void * arg){
 		///////////////////////////////////////////
 		// LANDING
 		///////////////////////////////////////////
-		//landing(message, n++, wait);
+		landing(message, n++, wait);
 		sleep(1);
 
 	}
