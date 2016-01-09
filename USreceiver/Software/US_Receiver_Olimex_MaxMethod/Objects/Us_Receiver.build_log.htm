@@ -21,13 +21,22 @@ Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V2.0.15.0_KEIL
 Dialog DLL:      TCM.DLL V1.14.5.0
  
 <h2>Project:</h2>
-G:\Scolaire\Scolaire 2015-2016\Projet Drone\SheldonProject\USreceiver\Software\US_Receiver_Olimex\Us_Receiver.uvprojx
+G:\Scolaire\Scolaire 2015-2016\Projet Drone\SheldonProject\USreceiver\Software\US_Receiver_Olimex_MaxMethod\Us_Receiver.uvprojx
 Project File Date:  12/11/2015
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.05 update 2 (build 169)', folder: 'F:\Programmes\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Target 1'
-".\Objects\Us_Receiver.axf" - 0 Error(s), 0 Warning(s).
+compiling main.c...
+application\src\main.c(76): warning:  #111-D: statement is unreachable
+        return 0;
+application\src\main.c: 1 warning, 0 errors
+compiling sampleAcquisition.c...
+compiling usbComm.c...
+compiling signalProcessing.c...
+linking...
+Program Size: Code=10682 RO-data=446 RW-data=304 ZI-data=5936  
+".\Objects\Us_Receiver.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -44,8 +53,8 @@ Package Vendor: Keil
    * Component: Startup Version: 1.0.0
 
 <h2>Collection of Component include folders:</h2>
-  G:\Scolaire\Scolaire 2015-2016\Projet Drone\SheldonProject\USreceiver\Software\US_Receiver_Olimex\RTE
-  G:\Scolaire\Scolaire 2015-2016\Projet Drone\SheldonProject\USreceiver\Software\US_Receiver_Olimex\RTE\Device\STM32F103RB
+  G:\Scolaire\Scolaire 2015-2016\Projet Drone\SheldonProject\USreceiver\Software\US_Receiver_Olimex_MaxMethod\RTE
+  G:\Scolaire\Scolaire 2015-2016\Projet Drone\SheldonProject\USreceiver\Software\US_Receiver_Olimex_MaxMethod\RTE\Device\STM32F103RB
   F:\Programmes\Keil_v5\ARM\PACK\ARM\CMSIS\4.3.0\CMSIS\Include
   F:\Programmes\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include
 
@@ -54,9 +63,9 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:4.1.0
 
    * Component: Keil::Device:Startup:1.0.0
-      Source file:   Device\Source\ARM\startup_stm32f10x_md.s
       Source file:   Device\Source\ARM\STM32F1xx_OPT.s
       Source file:   Device\Source\system_stm32f10x.c
+      Source file:   Device\Source\ARM\startup_stm32f10x_md.s
       Include file:  RTE_Driver\Config\RTE_Device.h
 </pre>
 </body>
