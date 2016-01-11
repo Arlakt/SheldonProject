@@ -1,23 +1,29 @@
-#include "./../API/track_position.h"
-#include "./../../../embedded-sw/serial.h"
+#include "find_position.h"
+#include <serial/serial.h>
+#include <signal.h> // for signals handling
+#include <string.h> // for memset function
 
-#include "./../API/common.h"
+t_position pos = {0, 100, 0};
 
 extern int keepRunning;
-
-//handler for a signal
-void intHandlerThread1(int sig){
-	keepRunning=0;
-	printf("thread 1 : find position\n");
-}
-
-t_position pos;
+extern pthread_mutex_t compute_pos_mux;
+extern pthread_mutex_t track_pos_mux;
 
 //position of each receiver embedded on the drone
 //angle with the back-to-front axis
 static int angle_step = 45 ;
 //front : 0 ; back : 180 ; right : 90 ; left : 270
 static int receiver_position[SIZE_ARRAY] = {-90, -45, 0, 45, 90, 135, 180, -135};
+
+static int distanceHistory[DISTANCE_HISTORY_SIZE] = {0};
+static int distHistPointer=0, distHistfull=0;
+
+//handler for a signal
+void intHandlerThread2(int sig){
+	keepRunning=0;
+	printf("CTRL+C signal in find_position\n");
+}
+
 
 //finds the receiver receiving the maximum signal
 //returns 1 if there is actually a result greater than the minimum threshold
@@ -39,6 +45,42 @@ int find_maximum(unsigned int * signals_power, int* max)
     return result;
 }
 
+/**
+ * @brief	Compute the distance with a moving average
+ *			keeping history of previous distances
+ */
+int computeMeanDistance(int currentDistance)
+{
+	int distance=0, i=0;
+
+	distanceHistory[distHistPointer] = currentDistance;
+	distHistPointer++;
+	if(distHistPointer >= DISTANCE_HISTORY_SIZE)
+	{
+		distHistfull = 1;
+		distHistPointer = 0;
+	}
+
+	// If the history has been fully filled, do average on the whole history
+	if(distHistfull)
+	{
+		for(i=0;i<DISTANCE_HISTORY_SIZE;i++)
+			distance += distanceHistory[i];
+		distance /= DISTANCE_HISTORY_SIZE;
+	}
+	// If it is the first time buffer is fill, do not do average on the whole history
+	else
+	{
+		for(i=0;i<distHistPointer;i++)
+			distance += distanceHistory[i];
+		if(i==0)
+			distance = 0;
+		else
+			distance /= i;
+	}
+	return distance;
+}
+
 /*
  * @brief	Compute source position from the array of signals strengths
  * @param	array 	pointer to the array of strengths
@@ -52,6 +94,7 @@ int find_pos(unsigned int* array, int* angle, int* distance)
 	int result = 0;
 	int maxIndex, indexLeft, indexRight;
 	unsigned long strengthSum = 0;
+	int currentDistance = 0;
 
 	result = find_maximum(array, &maxIndex);
 
@@ -73,19 +116,24 @@ int find_pos(unsigned int* array, int* angle, int* distance)
 		*angle += (((float)array[indexLeft])/strengthSum) * (receiver_position[maxIndex]-angle_step);
 		
 		if (*angle>180) *angle -= 360 ;
-		//if (*angle<-180) *angle += 360 ;
 
 		// Compute distance
 		//--------------------------------------------
 		///@todo to improve
-		*distance = (float)((float)(MAX_STRENGTH_DISTANCE - MIN_STRENGTH_DISTANCE)/(MAX_STRENGTH - MIN_STRENGTH)) * array[maxIndex];
+		currentDistance = (float)((float)(MAX_STRENGTH_DISTANCE - MIN_STRENGTH_DISTANCE)/(MAX_STRENGTH - MIN_STRENGTH)) * array[maxIndex] + MIN_STRENGTH_DISTANCE;
+		*distance = computeMeanDistance(currentDistance);
+		//*distance = currentDistance;
 
+		// Only for distance calibration
+		//printf("Puissance : %d - Distance : %d\n",array[maxIndex],*distance);
 	}
 	return result;
 }
 
-//finds the receiver with the maximum value
-//signals_power is an array containing the signal value on each receiver
+/**
+ * @brief	Get emitter position in pos_aux thanks to data from signals_power
+ *
+ */
 int basic_position(unsigned int * signals_power, t_position * pos_aux)
 {
 	int angle = 0;
@@ -98,50 +146,34 @@ int basic_position(unsigned int * signals_power, t_position * pos_aux)
     {
     	(*pos_aux).angle = angle;
     	(*pos_aux).distance = distance;
+    	(*pos_aux).signalDetected = 1; // true	
 	}
 	else
 	{
-		(*pos_aux).angle = 0;
-    	(*pos_aux).distance = 0; // WARNING TO BE CHANGED
+		(*pos_aux).signalDetected = 0; // false
 	}
-	/*
-    int rcv_max = 0;
-    int result = 0;
-    
-    result = find_pos(signals_power, &rcv_max);
-    
-    if(result)
-    {
-    	(*pos_aux).angle = receiver_position[rcv_max];
-    	(*pos_aux).distance = signals_power[rcv_max];
-	}
-	else
-	{
-		(*pos_aux).angle = 0;
-    	(*pos_aux).distance = 0; // WARNING TO BE CHANGED
-	}
-	*/
     return 0;
 }
 
-//function designed to be the main of a thread
-//put the position of the beacon in shared variable pos
+
+/**
+ * @brief	Function designed to be the main of a thread
+ * 			Compute emitter position and update it in the global variable
+ */
 void * compute_position(void * arg){
-    int i = 0;
     unsigned int signals_power [8] = {0, 0, 0, 0, 0, 0, 0, 0};
-    
-    //handle the ctrl -c to make the drone land
-	struct sigaction act;
-	memset(&act,0,sizeof(act));
-	act.sa_handler = intHandlerThread1;
-	sigaction(SIGINT, &act, NULL);
    
     //init to read serial port
     int fd = serial_init("/dev/ttyACM0");
 	if (fd == -1)
 		exit(1);
 	
-    //while(i < 10){
+	//handle the ctrl -c to make the drone land
+	struct sigaction act;
+	memset(&act,0,sizeof(act));
+	act.sa_handler = intHandlerThread2;
+	sigaction(SIGINT, &act, NULL);
+
     while(keepRunning){
         //locks its own mutex
         pthread_mutex_lock(&compute_pos_mux);
@@ -160,10 +192,8 @@ void * compute_position(void * arg){
 
         basic_position(signals_power, &pos);
                 
-        //
-		//release the mutex for printing
+        // unlock mutex for tracking thread
         pthread_mutex_unlock(&track_pos_mux);
-		i++;
     }
     pthread_exit(NULL);
 }

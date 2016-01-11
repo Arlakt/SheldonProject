@@ -1,4 +1,4 @@
-#include "./../API/flight_functions.h"
+#include "flight_functions.h"
 // CONFIGURATION DU DRONE
 //#define TYPE_DE_CIBLE "\"detect:detect_type\",\"12\""
 
@@ -151,11 +151,11 @@ char *set_simple_move(char *message, int sequence, direction dir, float power, i
 			break;
 
 		case ANTI_CLKWISE:
-			message = set_complex_move(message,sequence,0,-0.03,0.03,-(power),wait);
+			message = set_complex_move(message,sequence,0,0.06,0,-(power),wait);
 			break;
 
 		case CLKWISE:
-			message = set_complex_move(message,sequence,0,0.03,-0.03,power,wait);
+			message = set_complex_move(message,sequence,0,0.035,0,power,wait);
 			break;
 
 		default:

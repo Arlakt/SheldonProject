@@ -14,25 +14,28 @@
 #endif
 
 #define SIZE_ARRAY 8
-#define MIN_STRENGTH_TO_DETECT	50	// Minimum strength to affirm that a signal is received
+#define MIN_STRENGTH_TO_DETECT	200	// Minimum strength to affirm that a signal is received
 
-#define MAX_STRENGTH_DISTANCE	50 //in cm
-#define MIN_STRENGTH_DISTANCE	400 //in cm
+#define MAX_STRENGTH_DISTANCE	15 //in cm
+#define MIN_STRENGTH_DISTANCE	300 //in cm
 
 #define MAX_STRENGTH 	0xFFFF
-#define MIN_STRENGTH   	0
+#define MIN_STRENGTH   	1000
+
+#define DISTANCE_HISTORY_SIZE 8
 
 typedef struct _position{
     int angle; //in degrees, modulo 360
     int distance; //in meter
+    int signalDetected; // boolean to know if a signal has been detected
 } t_position;
 
 //shared variable of position of the beacon
 extern t_position pos;
 
 //mutex arbitrating computing and tracking
-extern pthread_mutex_t compute_pos_mux;
-extern pthread_mutex_t track_pos_mux;
+//extern pthread_mutex_t compute_pos_mux;
+//extern pthread_mutex_t track_pos_mux;
 
 
 //finds the receiver with the maximum value
