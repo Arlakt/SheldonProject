@@ -8,6 +8,14 @@
 
 #include "navdata.h"
 
+#ifndef NAVDATA_IP
+#define NAVDATA_IP "127.0.0.1"
+#endif
+
+#ifndef NAVDATA_PORT
+#define NAVDATA_PORT 5554
+#endif
+
 static int navdata_sock;
 static struct sockaddr_in navdata_addr;
 
@@ -34,10 +42,10 @@ int navdata_init()
 	// Save destination address to 127.0.0.1:5554
 	memset(&navdata_addr, 0, sizeof(navdata_addr));
     navdata_addr.sin_family = AF_INET;
-    if (! inet_aton("192.168.1.1", &(navdata_addr.sin_addr))) {
+    if (! inet_aton(NAVDATA_IP, &(navdata_addr.sin_addr))) {
     	goto err;
     }
-    navdata_addr.sin_port = htons(5554);
+    navdata_addr.sin_port = htons(NAVDATA_PORT);
     
 	return 0;
 	
