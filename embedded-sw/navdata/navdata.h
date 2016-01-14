@@ -1,6 +1,8 @@
 #ifndef NAVDATA_H
 #define NAVDATA_H
 
+#include <stdint.h>
+
 typedef float float32_t;
 
 typedef struct {
