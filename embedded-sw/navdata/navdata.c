@@ -73,10 +73,8 @@ int navdata_start()
 
 static int navdata_recv(unsigned char * buffer, size_t size)
 {
-	struct sockaddr_in addr;
-	socklen_t len;
-	ssize_t n = recvfrom(navdata_sock, buffer, size, 0,
-		(struct sockaddr *) &addr, &len);
+	memset(buffer, 0, size);
+	ssize_t n = recvfrom(navdata_sock, buffer, size, 0, NULL, NULL);
 	if (n < 0) {
 		perror("recvfrom");
 	}
