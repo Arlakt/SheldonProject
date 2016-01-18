@@ -51,27 +51,27 @@ int main()
 	
 	//exit(0);
 	
-	if (*(uint32_t *)(buffer + 4) & ARDRONE_NAVDATA_BOOTSTRAP) {
+	while (*(uint32_t *)(buffer + 4) & ARDRONE_NAVDATA_BOOTSTRAP) {
 		printf("Enabling navdata demo mode...\n");
-		sendto(sock, "AT*CONFIG=1,\"general:navdata_demo\",\"TRUE\"\r", 42, 0,
+		sendto(sock, "AT*CONFIG=200,\"general:navdata_demo\",\"TRUE\"\r", 42, 0,
 			(struct sockaddr *) &addr, sizeof(addr));
+		n = navdata_recv(buffer, sizeof(buffer));
+		debug(buffer, n);
 	}
 	
-	n = navdata_recv(buffer, sizeof(buffer));
-	debug(buffer, n);
+	printf("Demo mode enabled :)\n");
 	
-	sendto(sock, "AT*CTRL=2,0\r", 42, 0,
-		(struct sockaddr *) &addr, sizeof(addr));
+	//sendto(sock, "AT*CTRL=2,0\r", 42, 0, (struct sockaddr *) &addr, sizeof(addr));
 		
 	n = navdata_recv(buffer, sizeof(buffer));
 	debug(buffer, n);
 		
-	exit(0);
+	//exit(0);
 	
 	for (;;) {
-		int n = navdata_recv(buffer, sizeof(buffer));
-		if (n > 0) {
-			debug(buffer, n);
+		navdata_t navdata;
+		if (! navdata_get(&navdata)) {
+			navdata_print(stdout, &navdata);
 		}
 	}
 }
