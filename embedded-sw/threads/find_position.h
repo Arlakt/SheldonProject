@@ -13,6 +13,10 @@
 #include <sys/time.h>
 #endif
 
+#include <serial/serial.h>
+#include <signal.h> // for signals handling
+#include <string.h> // for memset function
+
 #define SIZE_ARRAY 8
 #define MIN_STRENGTH_TO_DETECT	200	// Minimum strength to affirm that a signal is received
 
@@ -32,11 +36,6 @@ typedef struct _position{
 
 //shared variable of position of the beacon
 extern t_position pos;
-
-//mutex arbitrating computing and tracking
-//extern pthread_mutex_t compute_pos_mux;
-//extern pthread_mutex_t track_pos_mux;
-
 
 //finds the receiver with the maximum value
 //signals_power is an array containing the signal value on each receiver

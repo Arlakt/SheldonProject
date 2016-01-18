@@ -8,49 +8,49 @@
 
 //if wait != 0, wait after sending the message
 //if wait = 0, don't wait
-char *normal_flight(char *message, int sequence, int wait)
+char *normal_flight(char *message, int wait)
 {
-    at_config(message, sequence, "control:flying_mode", "0");
+    at_config(message,  "control:flying_mode", "0");
     if (send_message(message,wait) != 0)
         printf("[FAILED] Message sending failed\n");
     return message;
 }
 
-char *hover_mode(char *message, int sequence, int wait)
+char *hover_mode(char *message, int wait)
 {
-    at_config(message, sequence, "control:flying_mode", "1");
+    at_config(message,  "control:flying_mode", "1");
     if (send_message(message,wait) != 0)
         printf("[FAILED] Message sending failed\n");
     return message;
 }
 
-char *oriented_roundel_detection(char *message, int sequence, int wait)
+char *oriented_roundel_detection(char *message, int wait)
 {
-    at_config(message, sequence, "detect:detect_type", "12");
+    at_config(message,  "detect:detect_type", "12");
     if (send_message(message,wait) != 0)
         printf("[FAILED] Message sending failed\n");
     return message;
 }
 
-char *front_cam_detecting(char *message, int sequence, int wait)
+char *front_cam_detecting(char *message, int wait)
 {
-    at_config(message, sequence, "detect:detections_select_h", "3"); //3 roundel oriented; 8 black roundel 
+    at_config(message,  "detect:detections_select_h", "3"); //3 roundel oriented; 8 black roundel 
     if (send_message(message,wait) != 0)
         printf("[FAILED] Message sending failed\n");
     return message;
 }
 
- char *bottom_cam_detecting_full_speed(char *message, int sequence, int wait) //60 fps
+ char *bottom_cam_detecting_full_speed(char *message, int wait) //60 fps
 {
-    at_config(message, sequence, "detect:detections_select_v", "3"); //3 roundel oriented; 8 black roundel
+    at_config(message,  "detect:detections_select_v", "3"); //3 roundel oriented; 8 black roundel
     if (send_message(message,wait) != 0)
         printf("[FAILED] Message sending failed\n");
     return message;
 }
 
-char *bottom_cam_detecting_half_speed(char *message, int sequence, int wait) //30 fps
+char *bottom_cam_detecting_half_speed(char *message, int wait) //30 fps
 {
-    at_config(message, sequence, "detect:detections_select_v_hsync", "3"); //3 roundel oriented; 8 black roundel
+    at_config(message,  "detect:detections_select_v_hsync", "3"); //3 roundel oriented; 8 black roundel
     if (send_message(message,wait) != 0)
         printf("[FAILED] Message sending failed\n");
     return message;
@@ -61,101 +61,101 @@ char *bottom_cam_detecting_half_speed(char *message, int sequence, int wait) //3
 //CONTROLS
 //******************************
 
-char *emergency(char *message, int sequence, int wait)
+char *emergency(char *message, int wait)
 {
-	at_ref(message, sequence, 290717952);
+	at_ref(message,  290717952);
     if (send_message(message,wait) != 0)
     	printf("[FAILED] Message sending failed\n");
 	return message;
 }
 
-char *anti_emergency(char *message, int sequence, int wait)
+char *anti_emergency(char *message, int wait)
 {
-	at_ref(message, sequence, 290717696);
+	at_ref(message,  290717696);
     if (send_message(message,wait) != 0)
     	printf("[FAILED] Message sending failed\n");
 	return message;
 }
 
-char *set_trim(char *message, int sequence, int wait)
+char *set_trim(char *message, int wait)
 {
 	//char message [512];
 	
-	at_ftrim(message, sequence);
+	at_ftrim(message);
     if (send_message(message,wait) != 0)
     	printf("[FAILED] Message sending failed\n");
 	return message;
 }
 
-char *take_off(char *message, int sequence, int wait)
+char *take_off(char *message, int wait)
 {
-	at_ref(message, sequence, 290718208);
+	at_ref(message,  290718208);
     if (send_message(message,wait) != 0)
     	printf("[FAILED] Message sending failed\n");
 	return message;
 }
 
-char *landing(char *message, int sequence, int wait)
+char *landing(char *message, int wait)
 {
 	//char message [512];
 	
-	at_ref(message, sequence, 290717696);
+	at_ref(message,  290717696);
     if (send_message(message,wait) != 0)
     	printf("[FAILED] Message sending failed\n");
 	return message;
 }
 
-char *turnaround(char *message, int sequence, int wait)
+char *turnaround(char *message, int wait)
 {
-    at_config(message, sequence, "control:flight_anim", "6,5000");
+    at_config(message,  "control:flight_anim", "6,5000");
     if (send_message(message,wait) != 0)
         printf("[FAILED] Message sending failed\n");
     return message;
 }
 
-char *flip_ahead(char *message, int sequence, int wait)
+char *flip_ahead(char *message, int wait)
 {
-    at_config(message, sequence, "control:flight_anim", "16,15");
+    at_config(message,  "control:flight_anim", "16,15");
     if (send_message(message,wait) != 0)
         printf("[FAILED] Message sending failed\n");
     return message;
 }
 
-char *set_simple_move(char *message, int sequence, direction dir, float power, int wait)
+char *set_simple_move(char *message, direction dir, float power, int wait)
 {
 	
 	switch(dir)
 	{
 		case LEFT:
-			message = set_complex_move(message,sequence,-(power),0,0,0,wait);
+			message = set_complex_move(message,-(power),0,0,0,wait);
 			break;
 
 		case RIGHT:
-			message = set_complex_move(message,sequence,power,0,0,0,wait);
+			message = set_complex_move(message,power,0,0,0,wait);
 			break;
             
 		case FRONT:
-			message = set_complex_move(message,sequence,0,-(power),0,0,wait);
+			message = set_complex_move(message,0,-(power),0,0,wait);
 			break;
 		    
 		case BACK:
-			message = set_complex_move(message,sequence,0,power,0,0,wait);
+			message = set_complex_move(message,0,power,0,0,wait);
 			break;
 
 		case DOWN:
-			message = set_complex_move(message,sequence,0,0,-(power),0,wait);
+			message = set_complex_move(message,0,0,-(power),0,wait);
 			break;
 
 		case UP:
-			message = set_complex_move(message,sequence,0,0,power,0,wait);
+			message = set_complex_move(message,0,0,power,0,wait);
 			break;
 
 		case ANTI_CLKWISE:
-			message = set_complex_move(message,sequence,0,0.06,0,-(power),wait);
+			message = set_complex_move(message,0,0.06,0,-(power),wait);
 			break;
 
 		case CLKWISE:
-			message = set_complex_move(message,sequence,0,0.035,0,power,wait);
+			message = set_complex_move(message,0,0.035,0,power,wait);
 			break;
 
 		default:
@@ -166,7 +166,7 @@ char *set_simple_move(char *message, int sequence, direction dir, float power, i
 }
 
 //each power MUST be within [-1;1]
-char *set_complex_move(char *message, int sequence, float roll_power, float pitch_power, float vertical_power, float yaw_power, int wait)
+char *set_complex_move(char *message, float roll_power, float pitch_power, float vertical_power, float yaw_power, int wait)
 {
 	pcmd_t command;
 
@@ -176,7 +176,7 @@ char *set_complex_move(char *message, int sequence, float roll_power, float pitc
 	command.verticalSpeed=vertical_power;
 	command.angularSpeed=yaw_power;
 
-	at_pcmd(message, sequence, command);
+	at_pcmd(message,  command);
 
 	if (send_message(message,wait) != 0)
 		printf("[FAILED] Message sending failed\n");
@@ -187,8 +187,8 @@ char *set_complex_move(char *message, int sequence, float roll_power, float pitc
 char *reset_com(char *message, int wait)
 {
 	at_comwdg(message);
-    if (send_message(message,wait) != 0)
-    	printf("[FAILED] Message sending failed\n");
+   if (send_message(message,wait) != 0)
+   	printf("[FAILED] Message sending failed\n");
 
 	return message;
 }
