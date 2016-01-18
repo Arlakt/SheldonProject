@@ -84,9 +84,25 @@ static int navdata_recv(unsigned char * buffer, size_t size)
 int navdata_get(navdata_t * data)
 {
 	// Read from socket
-	unsigned char buffer[1024];
+	unsigned char buffer[4096];
 	int n = navdata_recv(buffer, sizeof(buffer));
+	if (n < 18) {
+		return 1;
+	}
 	// Parse buffer to fill navdata struct
-	// TODO
+	if ((uint32_t *)(buffer)[0] != 0x55667788) {
+		return 1;
+	}
+	memcpy(&(data->header), buffer, sizeof(data->header));
+	buffer += sizeof(data->header);
+	struct navdata_option option;
+	memcpy(&option, buffer, sizeof(option));
+	buffer += sizeof(option);
+	if (option.tag == 0) {
+		memcpy(&(data->demo.header), option, sizeof(option));
+		memcpy(&(data->demo), buffer, sizeof(data->demo));
+		buffer += sizeof(data->demo);
+	}
+	return 0;
 }
 
