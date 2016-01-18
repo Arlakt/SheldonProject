@@ -105,3 +105,16 @@ int navdata_get(navdata_t * data)
 	return 0;
 }
 
+void navdata_print(FILE * stream, navdata_t const * data)
+{
+	fprintf(stream, "State: %08X\tSeq: %u\tVision: %u\n", data->header.state,
+		data->header.seq, data->header.vision);
+	if (data->demo.header.tag == 0) {
+		fprintf(stream, "Demo\n");
+		fprintf(stream, "    Battery: %u%%\tPitch: %f\tRoll: %f\tYaw: %f\n",
+			data->demo.battery, data->demo.theta, data->demo.phi, data->demo.psi);
+		fprintf(stream, "    Altitude: %d\tVx: %f\tVy: %f\tVz: %f\n",
+			data->demo.altitude, data->demo.vx, data->demo.vy, data->demo.vz);
+	}
+}
+

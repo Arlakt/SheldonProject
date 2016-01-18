@@ -2,6 +2,7 @@
 #define NAVDATA_H
 
 #include <stdint.h>
+#include <stdio.h>
 
 typedef float float32_t;
 
@@ -72,7 +73,7 @@ struct navdata_option {
 struct navdata_demo {
     struct navdata_option header;
     uint32_t		ctrl_state;                 // Flying state (landed, flying, hovering, etc.) defined in CTRL_STATES enum. 
-    uint32_t		vbat_flying_percentage;     // battery voltage filtered (mV) 
+    uint32_t		battery;                    // battery voltage filtered (%) 
     float32_t		theta;                      // pitch angle in milli-degrees 
     float32_t		phi;                        // roll  angle
     float32_t		psi;                        // yaw   angle
@@ -110,5 +111,6 @@ typedef struct _navdata {
 int navdata_init();
 int navdata_start();
 int navdata_get(navdata_t * data);
+void navdata_print(FILE * stream, navdata_t const * data);
 
 #endif
