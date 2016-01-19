@@ -34,24 +34,34 @@ void * altitude(void * arg)
 	navdata_start();
 	
 	// Configure navdata
-	do {
-		navdata_get(&navdata);
-		if (navdata.header.state & ARDRONE_NAVDATA_BOOTSTRAP) {
-			// Send AT_CONFIG command to enable demo options
-			char buffer[64];
-			printf("altitude: enabling demo options...\n");
-			pthread_mutex_lock(&at_cmd_mux);
-			at_config(buffer, "general:navdata_demo", "TRUE");
-			send_message(buffer, 0);
-			pthread_mutex_unlock(&at_cmd_mux);
-			usleep(40000);
-		}
-	} while (navdata.header.state & ARDRONE_NAVDATA_BOOTSTRAP);
-	printf("altitude: demo options enabled...\n");
+	char buffer[64];
+	pthread_mutex_lock(&at_cmd_mux);
+	printf("altitude: enabling demo options...\n");
+	navdata_get(&navdata);
+	if (navdata.header.state & ARDRONE_NAVDATA_BOOTSTRAP) {
+		// Send AT_CONFIG command to enable demo options
+		printf("altitude: sending AT CONFIG...\n");
+		at_config(buffer, "general:navdata_demo", "TRUE");
+		send_message(buffer, 0);
+		usleep(40000);
+		do {
+			navdata_get(&navdata);
+		} while (! (navdata.header.state & ARDRONE_COMMAND_MASK));
+		// Send AT_CTRL
+		printf("altitude: sending AT CTRL...\n");
+		at_ctrl(buffer, 0);
+		send_message(buffer, 0);
+		usleep(40000);
+		do {
+			navdata_get(&navdata);
+		} while (! (navdata.header.state & ARDRONE_COMMAND_MASK));
+	}
+	pthread_mutex_unlock(&at_cmd_mux);
+	printf("altitude: demo options enabled :-)\n");
 	
 	// Keep updating navdata
 	while (keepRunning) {
-		sleep(1);
+		usleep(40000);
 		navdata_get(&navdata);
 		navdata_print(stdout, &navdata);
 		// If no signal received and altitude too high, go down
