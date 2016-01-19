@@ -14,10 +14,12 @@
 #include <string.h> // for memset function
 #include <threads/find_position.h>
 #include <threads/track_position.h>
+#include <threads/altitude.h>
 
 //declaration and initialization of the different mutex
 pthread_mutex_t compute_pos_mux = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t track_pos_mux   = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t at_cmd_mux      = PTHREAD_MUTEX_INITIALIZER;
 
 int keepRunning = 1;
 
@@ -34,6 +36,7 @@ int main ()
     //declaration of the different threads
     pthread_t thread_position;
     pthread_t thread_track_position;
+    pthread_t thread_altitude;
 
     //handle the ctrl -c to make the drone land
     struct sigaction act;
@@ -46,21 +49,28 @@ int main ()
 
     //creation of the thread calculating the position of the beacon
     if(pthread_create(&thread_position, NULL, compute_position, signal) == -1) {
-	printf("pthread_create position fail");
+		printf("pthread_create compute position fail");
     }
 
 	//creation of the thread tracking the position of the beacon
     if(pthread_create(&thread_track_position, NULL, track_position, NULL) == -1) {
-		printf("pthread_create position fail");
+		printf("pthread_create track position fail");
+	}
+	
+	//creation of the thread updating the navdata and watching altitude
+    if(pthread_create(&thread_altitude, NULL, altitude, NULL) == -1) {
+		printf("pthread_create altitude fail");
 	}
 
     //waiting for the threads to finish before closing the main
     pthread_join(thread_position, NULL);
     pthread_join(thread_track_position, NULL);
+    pthread_join(thread_altitude, NULL);
     
     //destroy the mutex before closing the main
     pthread_mutex_destroy(&compute_pos_mux);
     pthread_mutex_destroy(&track_pos_mux);
+    pthread_mutex_destroy(&at_cmd_mux);
 
     return 0;
 }

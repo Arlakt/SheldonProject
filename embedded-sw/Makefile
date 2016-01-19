@@ -6,7 +6,7 @@ LDFLAGS =
 
 CFLAGS += -I .
 
-OBJS = serial/serial.o movement/at_commands_builder.o movement/flight_functions.o movement/UDP_sender.o threads/find_position.o threads/track_position.o
+OBJS = serial/serial.o movement/at_commands_builder.o movement/flight_functions.o movement/UDP_sender.o navdata/navdata.o threads/find_position.o threads/track_position.o threads/altitude.o
 
 # $@ = cible
 # $^ = toutes les dependances

@@ -5,6 +5,6 @@
 
 extern navdata_t navdata;
 
-void thread_altitude(void * arg);
+void altitude(void * arg);
 
 #endif
