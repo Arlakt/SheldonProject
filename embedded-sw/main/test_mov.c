@@ -48,7 +48,7 @@ int main ()
     else //complex_move(...;float roll_power, float pitch_power, float vertical_power, float yaw_power)
     {
 		sleep(1);
-        	printf("demarrage\n");
+    	printf("demarrage\n");
 		set_trim(message, n++, wait);
 		
 		while(tps < 167)

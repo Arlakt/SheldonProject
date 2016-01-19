@@ -13,6 +13,14 @@
 #include <sys/time.h>
 #endif
 
+//#include "find_position.h"
+#include <movement/flight_functions.h>
+#include "find_position.h"
+#include <movement/UDP_sender.h>
+#include <signal.h> // for signals handling
+#include <string.h> // for memset function
+#include <time.h>
+
 #define ANGLE_PRECISION 10 // in degrees
 
 void print_position(void);

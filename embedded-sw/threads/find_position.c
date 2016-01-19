@@ -1,7 +1,4 @@
 #include "find_position.h"
-#include <serial/serial.h>
-#include <signal.h> // for signals handling
-#include <string.h> // for memset function
 
 t_position pos = {0, 100, 0};
 
@@ -23,7 +20,6 @@ void intHandlerThread2(int sig){
 	keepRunning=0;
 	printf("CTRL+C signal in find_position\n");
 }
-
 
 //finds the receiver receiving the maximum signal
 //returns 1 if there is actually a result greater than the minimum threshold
