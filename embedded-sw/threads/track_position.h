@@ -1,4 +1,4 @@
-#ifndef TRACK_POSITION
+#ifndef TRACK_POSITION_H
 #define TRACK_POSITION_H
 
 #ifndef BASIC
@@ -13,9 +13,8 @@
 #include <sys/time.h>
 #endif
 
-//#include "find_position.h"
-#include <movement/flight_functions.h>
 #include "find_position.h"
+#include <movement/flight_functions.h>
 #include <movement/UDP_sender.h>
 #include <signal.h> // for signals handling
 #include <string.h> // for memset function

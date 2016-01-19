@@ -1,4 +1,4 @@
-#ifndef FIND_POSITION
+#ifndef FIND_POSITION_H
 #define FIND_POSITION_H
 
 #ifndef BASIC
