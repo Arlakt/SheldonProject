@@ -84,3 +84,13 @@ char *at_comwdg(char *buf)
         fprintf(stderr, "[%s:%d] Error: Buffer is null!", __FILE__, __LINE__);
     return buf;
 }
+
+char *at_ctrl(char *buf, int x)
+{
+    if (buf != NULL)
+        sprintf(buf, "AT*CTRL=%d,%d\r", num_seq++, x);
+    else
+        fprintf(stderr, "[%s:%d] Error: Buffer is null!", __FILE__, __LINE__);
+    return buf;
+}
+

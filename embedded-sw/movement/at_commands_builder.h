@@ -32,5 +32,6 @@ char *at_calib(char *buf, ardrone_calibration_device_t id);
 char *at_config(char *buf, const char *name, const char *value);
 char *at_config_ids(char *buf, const char *sessionId, const char *userId, const char *appId);
 char *at_comwdg(char *buf);
+char *at_ctrl(char *buf, int x);
 
 #endif // AT_COMMANDS_H
