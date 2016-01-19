@@ -23,6 +23,6 @@ main.elf: main/main.o $(OBJS)
 .PHONY: clean
 
 clean:
-	rm $(OBJS)
-	rm *.elf
+	rm -f $(OBJS)
+	rm -f *.elf
 
