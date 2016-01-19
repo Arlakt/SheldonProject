@@ -55,7 +55,7 @@ void * track_position(void * arg){
 
     gettimeofday(&old_tv, NULL); 
 
-	pthread_mutex_lock(&at_cmd_mux);
+	//pthread_mutex_lock(&at_cmd_mux); // done in main()
 	if (init_socket() != 0)
     {
         printf("[FAILED] Socket initialization failed\n");
@@ -83,7 +83,7 @@ void * track_position(void * arg){
 	printf("Going up...\n");
 	for (int i = 0; i < 50; i++)
 	{
-		set_simple_move(message, UP, 1, wait);
+		//set_simple_move(message, UP, 1, wait);
 	}
 	set_simple_move(message, UP, 0.0, wait);
 	
@@ -104,7 +104,7 @@ void * track_position(void * arg){
 		pthread_mutex_lock(&track_pos_mux);
 		pthread_mutex_lock(&at_cmd_mux);
 
-		print_position();
+		//print_position();
 		
 		///////////////////////////////////////////////////////////////////////
 		// MOVES TO HAVE THE RIGHT ANGLE AND RIGHT DISTANCE FROM THE EMIITER
@@ -120,7 +120,7 @@ void * track_position(void * arg){
 		// If a signal has been detected, move !
 		else
 		{
-
+/*
 			if(pos.angle >= -ANGLE_PRECISION/2 && pos.angle <= ANGLE_PRECISION/2)
 			{
 				// For now, always move forward when the source in front of the drone
@@ -138,7 +138,7 @@ void * track_position(void * arg){
 				set_simple_move(message, CLKWISE, 0.5, wait);
 			else
 				set_simple_move(message, ANTI_CLKWISE, 0.5,wait);
-			
+			*/
 		}
 		
 		pthread_mutex_unlock(&at_cmd_mux);

@@ -46,6 +46,9 @@ int main ()
 
     //immediate lock of the mutex printing the position so first we calculate it at start
     pthread_mutex_lock(&track_pos_mux);
+    
+    //immediate lock of the AT commands mutex to let track_position initialise it
+    pthread_mutex_lock(&at_cmd_mux);
 
     //creation of the thread calculating the position of the beacon
     if(pthread_create(&thread_position, NULL, compute_position, signal) == -1) {
