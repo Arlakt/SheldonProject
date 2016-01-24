@@ -4,7 +4,7 @@
   * @brief   Interrupt Service Routines.
   ******************************************************************************
   *
-  * COPYRIGHT(c) 2015 STMicroelectronics
+  * COPYRIGHT(c) 2016 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -80,7 +80,7 @@ void TIM4_IRQHandler(void)
 		
 		counter1++;
 		if(counter1 > 25){
-			HAL_GPIO_TogglePin(GPIOB,LED_8_Pin);
+			HAL_GPIO_TogglePin(GPIOB,LED_Pin);
 			counter1=0;
 		}
 	}
@@ -89,11 +89,10 @@ void TIM4_IRQHandler(void)
 		
 		counter2++;
 		if(counter2 > 25){
-			HAL_GPIO_TogglePin(GPIOB,LED_9_Pin);
 			counter2=0;
 		}
 	}
-	/* USER CODE END TIM4_IRQn 0 */
+  /* USER CODE END TIM4_IRQn 0 */
   HAL_TIM_IRQHandler(&htim4);
   /* USER CODE BEGIN TIM4_IRQn 1 */
 

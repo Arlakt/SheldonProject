@@ -8,8 +8,8 @@ ARM Macro Assembler    Page 1
                        ics ********************
     2 00000000         ;* File Name          : startup_stm32f103xb.s
     3 00000000         ;* Author             : MCD Application Team
-    4 00000000         ;* Version            : V4.0.1
-    5 00000000         ;* Date               : 31-July-2015
+    4 00000000         ;* Version            : V4.0.2
+    5 00000000         ;* Date               : 18-December-2015
     6 00000000         ;* Description        : STM32F103xB Devices vector table
                         for MDK-ARM toolchain. 
     7 00000000         ;*                      This module performs:
@@ -496,13 +496,14 @@ ARM Macro Assembler    Page 8
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
 ork --depend="emetteur_drone configuration\startup_stm32f103xb.d" -o"emetteur_d
-rone configuration\startup_stm32f103xb.o" -IC:\Users\Raphael\Documents\STM32_Pr
-ojetcs\Emetteur_drone\MDK-ARM\RTE -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\I
-nclude -IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.0.0\Device\Include --predefin
-e="__EVAL SETA 1" --predefine="__MICROLIB SETA 1" --predefine="__UVISION_VERSIO
-N SETA 517" --predefine="_RTE_ SETA 1" --predefine="STM32F10X_MD SETA 1" --list
-=startup_stm32f103xb.lst ../Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates/
-arm/startup_stm32f103xb.s
+rone configuration\startup_stm32f103xb.o" -I"G:\Scolaire\Scolaire 2015-2016\Pro
+jet Drone\SheldonProject\USemitter\STM32_Project\Emetteur_drone\MDK-ARM\RTE" -I
+F:\Programmes\Keil_v5\ARM\PACK\ARM\CMSIS\4.3.0\CMSIS\Include -IF:\Programmes\Ke
+il_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include --predefine="__EVAL SETA
+ 1" --predefine="__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 515" --
+predefine="_RTE_ SETA 1" --predefine="STM32F10X_MD SETA 1" --list=startup_stm32
+f103xb.lst ../Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates/arm/startup_st
+m32f103xb.s
 
 
 

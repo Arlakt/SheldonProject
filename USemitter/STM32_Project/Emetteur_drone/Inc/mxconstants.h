@@ -4,7 +4,7 @@
   * Description        : This file contains the common defines of the application
   ******************************************************************************
   *
-  * COPYRIGHT(c) 2015 STMicroelectronics
+  * COPYRIGHT(c) 2016 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -38,12 +38,12 @@
 
 /* Private define ------------------------------------------------------------*/
 
-#define SIGNAL_40KHZ_Pin GPIO_PIN_8
-#define SIGNAL_40KHZ_GPIO_Port GPIOA
-#define LED_8_Pin GPIO_PIN_8
-#define LED_8_GPIO_Port GPIOB
-#define LED_9_Pin GPIO_PIN_9
-#define LED_9_GPIO_Port GPIOB
+#define S_40KHZ_NOT_Pin GPIO_PIN_7
+#define S_40KHZ_NOT_GPIO_Port GPIOA
+#define S_40KHZ_Pin GPIO_PIN_8
+#define S_40KHZ_GPIO_Port GPIOA
+#define LED_Pin GPIO_PIN_8
+#define LED_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

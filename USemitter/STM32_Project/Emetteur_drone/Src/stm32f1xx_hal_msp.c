@@ -5,7 +5,7 @@
   *                      and de-Initialization codes.
   ******************************************************************************
   *
-  * COPYRIGHT(c) 2015 STMicroelectronics
+  * COPYRIGHT(c) 2016 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -73,13 +73,15 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
     __TIM1_CLK_ENABLE();
   
     /**TIM1 GPIO Configuration    
+    PA7     ------> TIM1_CH1N
     PA8     ------> TIM1_CH1 
     */
-    GPIO_InitStruct.Pin = SIGNAL_40KHZ_Pin;
+    GPIO_InitStruct.Pin = S_40KHZ_NOT_Pin|S_40KHZ_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
-    HAL_GPIO_Init(SIGNAL_40KHZ_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+    __HAL_AFIO_REMAP_TIM1_PARTIAL();
   /* USER CODE BEGIN TIM1_MspInit 1 */
 
   /* USER CODE END TIM1_MspInit 1 */
@@ -129,9 +131,10 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
     __TIM1_CLK_DISABLE();
   
     /**TIM1 GPIO Configuration    
+    PA7     ------> TIM1_CH1N
     PA8     ------> TIM1_CH1 
     */
-    HAL_GPIO_DeInit(SIGNAL_40KHZ_GPIO_Port, SIGNAL_40KHZ_Pin);
+    HAL_GPIO_DeInit(GPIOA, S_40KHZ_NOT_Pin|S_40KHZ_Pin);
 
   }
   /* USER CODE BEGIN TIM1_MspDeInit 1 */
