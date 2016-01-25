@@ -1,9 +1,11 @@
 #include "track_position.h"
+#include "altitude.h"
 
 extern int keepRunning;
 extern pthread_mutex_t compute_pos_mux;
 extern pthread_mutex_t track_pos_mux;
 extern pthread_mutex_t at_cmd_mux;
+extern pthread_mutex_t navdata_mux;
 
 //handler for a signal
 void intHandlerThread3(int sig){
@@ -93,6 +95,7 @@ void * track_position(void * arg){
 	wait = 0;
 	
 	elapsed_time = 35000;
+	unsigned int no_signal_count = 0;
 
 	while(keepRunning){
 	    while (elapsed_time < 35000)
@@ -115,7 +118,23 @@ void * track_position(void * arg){
 		if(!pos.signalDetected)
 		{
 			// stop moving
-			set_simple_move(message, FRONT, 0, wait);
+			set_simple_move(message, FRONT, 0.0, wait);
+			
+			no_signal_count++;
+			if (no_signal_count > 125) { // approx 5 seconds
+				no_signal_count = 0;
+				pthread_mutex_lock(&navdata_mux);
+				if (navdata.demo.altitude < 300) {
+					printf("track_position: altitude too low!\n");
+					set_simple_move(message, UP, 1.0, wait);
+				} else if (navdata.demo.altitude > 1100) {
+					set_simple_move(message, DOWN, 1.0, wait);
+					printf("track_position: altitude too high!\n");
+				} else {
+					printf("track_position: altitude ok :-)\n");
+				}
+				pthread_mutex_unlock(&navdata_mux);
+			}
 		}
 		// If a signal has been detected, move !
 		else

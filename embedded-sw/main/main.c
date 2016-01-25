@@ -20,6 +20,7 @@
 pthread_mutex_t compute_pos_mux = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t track_pos_mux   = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t at_cmd_mux      = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t navdata_mux     = PTHREAD_MUTEX_INITIALIZER;
 
 int keepRunning = 1;
 

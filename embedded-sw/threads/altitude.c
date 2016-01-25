@@ -12,6 +12,7 @@ extern int keepRunning;
 extern pthread_mutex_t compute_pos_mux;
 extern pthread_mutex_t track_pos_mux;
 extern pthread_mutex_t at_cmd_mux;
+extern pthread_mutex_t navdata_mux;
 
 navdata_t navdata;
 
@@ -62,8 +63,10 @@ void * altitude(void * arg)
 	// Keep updating navdata
 	while (keepRunning) {
 		usleep(40000);
+		pthread_mutex_lock(&navdata_mux);
 		navdata_get(&navdata);
 		navdata_print(stdout, &navdata);
+		pthread_mutex_unlock(&navdata_mux);
 		// If no signal received and altitude too high, go down
 		// TODO
 	}
